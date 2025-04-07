@@ -23,10 +23,6 @@ parameters:
   displayName: 'Generate TypeScript SDK'
   type: boolean
   default: false
-- name: generateTypeScript
-  displayName: 'Generate TypeScript SDK'
-  type: boolean
-  default: false
 - name: generatePHP
   displayName: 'Generate PHP SDK'
   type: boolean
