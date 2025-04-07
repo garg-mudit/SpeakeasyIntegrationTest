@@ -7,19 +7,22 @@ trigger:
 - main
 
 parameters:
-- name: languages
-  displayName: 'Select languages for SDK generation'
-  type: object
-  default:
-    - 'csharp'
-    - 'java'
-  values:
-    - 'csharp'
-    - 'java'
-    - 'python'
-    - 'typescript'
-    - 'ruby'
-    - 'php'
+- name: generateCSharp
+  displayName: 'Generate C# SDK'
+  type: boolean
+  default: false
+- name: generateJava
+  displayName: 'Generate Java SDK'
+  type: boolean
+  default: false
+- name: generatePython
+  displayName: 'Generate Python SDK'
+  type: boolean
+  default: false
+- name: generateTypeScript
+  displayName: 'Generate TypeScript SDK'
+  type: boolean
+  default: false
 
 pool:
   vmImage: ubuntu-latest
