@@ -25,9 +25,9 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
-- stage: 'Validate Spec Stage'
+- stage: 'Validate_Spec_Stage'
   jobs:
-  - job: ValidateOpenAPISpec
+  - job: Validate_OpenAPI_Spec
     steps:
     - script: |
         # Assuming the OpenAPI spec is named 'openapi.yaml' and located at the root
