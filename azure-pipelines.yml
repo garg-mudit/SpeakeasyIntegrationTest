@@ -29,8 +29,8 @@ stages:
   jobs:
   - job: Validate_OpenAPI_Spec
     steps:
-    - script: cat openapi.yml
-      displayName: 'Display openapi.yml Content'    
+    - script: cat openapi.json
+      displayName: 'Display openapi.json Content'    
     - script: |
         # Assuming the OpenAPI spec is named 'openapi.yaml' and located at the root
         curl -X POST -H 'Content-Type: application/json' --data-binary @openapi.json https://validator.swagger.io/validator/debug
