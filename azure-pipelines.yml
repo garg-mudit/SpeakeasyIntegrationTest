@@ -34,4 +34,5 @@ stages:
     - script: |
         # Assuming the OpenAPI spec is named 'openapi.yaml' and located at the root
         curl -X POST -H 'Content-Type: application/json' --data-binary @openapi.json https://validator.swagger.io/validator/debug
+        #TODO@MUDIT: CALL INTERNAL SERVICE INSTEAD AND ADD LOGIC TO SHOW ERRORS AND FAIL PIPELINE BASED ON RESULT. 
       displayName: 'Validate OpenAPI Specification'
