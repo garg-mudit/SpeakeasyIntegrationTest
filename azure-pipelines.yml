@@ -57,7 +57,7 @@ stages:
       displayName: 'Install Speakeasy CLI'
 
     - script: |
-        speakeasy auth login --api-key $(SPEAKEASY_API_KEY)
+        speakeasy auth login
       displayName: 'Authenticate Speakeasy CLI'
 
 - stage: GenerateSDKs
