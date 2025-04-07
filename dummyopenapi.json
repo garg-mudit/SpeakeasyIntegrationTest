@@ -1,0 +1,344 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Connected Fields API",
+    "description": "Connected Fields API",
+    "termsOfService": "https://www.docusign.com/company/terms-and-conditions/web",
+    "contact": {
+      "name": "DocuSign Developers",
+      "email": "dcdev@docusign.com"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "/devx-iam-public/v1"
+    }
+  ],
+  "paths": {
+    "/accounts/{accountId}/connected-fields/tab-groups": {
+      "get": {
+        "operationId": "ESign Tabs Discovery",
+        "summary": "Fetches all tabs associated with the given account",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "appId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "connectorId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locale",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "unifiedModelCategory",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "UNIFIEDMODELCATEGORY_UNKNOWN",
+                "UNIFIEDMODELCATEGORY_NONE",
+                "UNIFIEDMODELCATEGORY_OOTB",
+                "UNIFIEDMODELCATEGORY_CUSTOM",
+                "UNIFIEDMODELCATEGORY_CONNECTED",
+                "UNIFIED_MODEL_CATEGORY_CONNECTED"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "sops",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "write",
+                  "read",
+                  "verify"
+                ]
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TabInfo"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDTO"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Authentication is required",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDTO"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Tab Info"
+        ]
+      }
+    }
+  },
+  "tags": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "ErrorResponseDTO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "JsonNode": {
+        "type": "object",
+        "properties": {
+          "options": {
+            "$ref": "#/components/schemas/JsonNodeOptions"
+          },
+          "parent": {
+            "$ref": "#/components/schemas/JsonNode"
+          },
+          "root": {
+            "$ref": "#/components/schemas/JsonNode"
+          }
+        },
+        "additionalProperties": false
+      },
+      "JsonNodeOptions": {
+        "type": "object",
+        "properties": {
+          "propertyNameCaseInsensitive": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TabConnectionInstance": {
+        "type": "object",
+        "properties": {
+          "connectionKey": {
+            "type": "string"
+          },
+          "connectionValue": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "connectionKey",
+          "connectionValue"
+        ]
+      },
+      "TabConnectedFiledsData": {
+        "type": "object",
+        "properties": {
+          "typeSystemNamespace": {
+            "type": "string"
+          },
+          "typeName": {
+            "type": "string"
+          },
+          "supportedOperation": {
+            "type": "string"
+          },
+          "propertyName": {
+            "type": "string"
+          },
+          "supportedUri": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "typeSystemNamespace",
+          "typeName",
+          "supportedOperation",
+          "propertyName",
+          "supportedUri"
+        ]
+      },
+      "TabExtensionData": {
+        "type": "object",
+        "properties": {
+          "extensionGroupId": {
+            "type": "string"
+          },
+          "actionInputKey": {
+            "type": "string"
+          },
+          "extensionPolicy": {
+            "type": "string"
+          },
+          "publisherName": {
+            "type": "string"
+          },
+          "applicationName": {
+            "type": "string"
+          },
+          "actionName": {
+            "type": "string"
+          },
+          "extensionContract": {
+            "type": "string"
+          },
+          "actionContract": {
+            "type": "string"
+          },
+          "extensionName": {
+            "type": "string"
+          },
+          "requiredForExtension": {
+            "type": "boolean"
+          },
+          "connectionInstances": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TabConnectionInstance"
+            }
+          },
+          "connectedFieldsData": {
+            "$ref": "#/components/schemas/TabConnectedFiledsData"
+          }
+        },
+        "required": [
+          "extensionGroupId",
+          "actionInputKey",
+          "requiredForExtension"
+        ]
+      },
+      "Tab": {
+        "type": "object",
+        "properties": {
+          "extensionData": {
+            "$ref": "#/components/schemas/TabExtensionData"
+          },
+          "tabType": {
+            "type": "string"
+          },
+          "validationPattern": {
+            "type": "string"
+          },
+          "validationMessage": {
+            "type": "string"
+          },
+          "tabLabel": {
+            "type": "string"
+          },
+          "radios": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "extensionData",
+          "tabType",
+          "tabLabel"
+        ]
+      },
+      "TabInfo": {
+        "type": "object",
+        "properties": {
+          "appId": {
+            "type": "string"
+          },
+          "tabs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tab"
+            }
+          }
+        },
+        "required": [
+          "appId",
+          "tabs"
+        ]
+      }
+    }
+  },
+  "security": [
+    {
+      "bearer": []
+    }
+  ]
+}
