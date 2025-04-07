@@ -33,6 +33,5 @@ stages:
       displayName: 'Display openapi.yml Content'    
     - script: |
         # Assuming the OpenAPI spec is named 'openapi.yaml' and located at the root
-        pip install yq
-        yq -o=json openapi.yaml | curl -X POST -H 'Content-Type: application/json' --data-binary @- https://validator.swagger.io/validator/debug
+        curl -X POST -H 'Content-Type: application/json' --data-binary @openapi.json https://validator.swagger.io/validator/debug
       displayName: 'Validate OpenAPI Specification'
