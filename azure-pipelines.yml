@@ -48,3 +48,42 @@ stages:
         curl -X POST -H 'Content-Type: application/json' --data-binary @openapi.json https://validator.swagger.io/validator/debug
         #TODO@MUDIT: CALL INTERNAL SERVICE INSTEAD AND ADD LOGIC TO SHOW ERRORS AND FAIL PIPELINE BASED ON RESULT. 
       displayName: 'Validate OpenAPI Specification'
+- stage: InstallCLI
+  jobs:
+  - job: Install_Speakeasy_CLI
+    steps:
+    - script: |
+        curl -fsSL https://speakeasyapi.dev/install.sh | sh
+      displayName: 'Install Speakeasy CLI'
+
+    - script: |
+        speakeasy auth login --api-key $(SPEAKEASY_API_KEY)
+      displayName: 'Authenticate Speakeasy CLI'
+
+- stage: GenerateSDKs
+  dependsOn: InstallCLI
+  jobs:
+  - template: generate-sdk-template.yml
+    parameters:
+      language: 'csharp'
+      generateSDK: ${{ parameters.generateCSharp }}
+  - template: generate-sdk-template.yml
+    parameters:
+      language: 'java'
+      generateSDK: ${{ parameters.generateJava }}
+  - template: generate-sdk-template.yml
+    parameters:
+      language: 'php'
+      generateSDK: ${{ parameters.generatePHP }}
+  - template: generate-sdk-template.yml
+    parameters:
+      language: 'ruby'
+      generateSDK: ${{ parameters.generateRuby }}
+  - template: generate-sdk-template.yml
+    parameters:
+      language: 'python'
+      generateSDK: ${{ parameters.generatePython }}
+  - template: generate-sdk-template.yml
+    parameters:
+      language: 'typescript'
+      generateSDK: ${{ parameters.generateTypeScript }}
