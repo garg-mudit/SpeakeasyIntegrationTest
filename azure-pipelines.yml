@@ -53,7 +53,7 @@ stages:
   - job: Install_Speakeasy_CLI
     steps:
     - script: |
-        curl -fsSL https://speakeasyapi.dev/install.sh | sh
+        curl -fsSL https://go.speakeasy.com/cli-install.sh | sh
       displayName: 'Install Speakeasy CLI'
 
     - script: |
