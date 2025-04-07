@@ -1,0 +1,19 @@
+# File: generate-sdk-template.yml
+parameters:
+- name: language
+  type: string
+- name: generateSDK
+  type: boolean
+  default: false
+
+jobs:
+- job: Generate_${{ parameters.language }}
+  condition: eq('${{ parameters.generateSDK }}', 'true')
+  steps:
+  - script: |
+      speakeasy generate sdk --lang ${{ parameters.language }} --input openapi.json --output ./sdks/${{ parameters.language }}
+    displayName: 'Generate ${{ parameters.language }} SDK'
+
+  - publish: ./sdks/${{ parameters.language }}
+    artifact: ${{ parameters.language }}-sdk
+    displayName: 'Publish ${{ parameters.language }} SDK as artifact'
