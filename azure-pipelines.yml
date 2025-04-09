@@ -56,10 +56,6 @@ stages:
         curl -fsSL https://go.speakeasy.com/cli-install.sh | sh
       displayName: 'Install Speakeasy CLI'
 
-    - script: |
-        speakeasy auth login
-      displayName: 'Authenticate Speakeasy CLI'
-
 - stage: GenerateSDKs
   dependsOn: InstallCLI
   jobs:
