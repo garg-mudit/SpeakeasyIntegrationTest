@@ -10,6 +10,8 @@ jobs:
 - job: Generate_${{ parameters.language }}
   condition: eq('${{ parameters.generateSDK }}', 'true')
   steps:
+  - template: install-speakeasy-cli.yml
+
   - script: |
       speakeasy generate sdk --lang ${{ parameters.language }} --input openapi.json --output ./sdks/${{ parameters.language }}
     displayName: 'Generate ${{ parameters.language }} SDK'
