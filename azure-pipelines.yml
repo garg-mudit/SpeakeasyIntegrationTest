@@ -56,7 +56,6 @@ stages:
 #      displayName: 'Install Speakeasy CLI'
 
 - stage: GenerateSDKs
-  dependsOn: InstallCLI
   jobs:
   - template: generate-sdk-template.yml
     parameters:
