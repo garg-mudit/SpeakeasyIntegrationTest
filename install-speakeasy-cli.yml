@@ -1,0 +1,6 @@
+# File: install-speakeasy-cli.yml
+steps:
+- script: |
+    # Install Speakeasy CLI
+    curl -fsSL https://speakeasyapi.dev/install.sh | sh
+  displayName: 'Install Speakeasy CLI'
