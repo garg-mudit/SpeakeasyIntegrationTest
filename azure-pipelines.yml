@@ -36,24 +36,24 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
-- stage: 'Validate_Spec_Stage'
-  jobs:
-  - job: Validate_OpenAPI_Spec
-    steps:
-    - script: cat openapi.json
-      displayName: 'Display openapi.json Content'    
-    - script: |
-        # Assuming the OpenAPI spec is named 'openapi.yaml' and located at the root
-        curl -X POST -H 'Content-Type: application/json' --data-binary @openapi.json https://validator.swagger.io/validator/debug
-        #TODO@MUDIT: CALL INTERNAL SERVICE INSTEAD AND ADD LOGIC TO SHOW ERRORS AND FAIL PIPELINE BASED ON RESULT. 
-      displayName: 'Validate OpenAPI Specification'
-- stage: InstallCLI
-  jobs:
-  - job: Install_Speakeasy_CLI
-    steps:
-    - script: |
-        curl -fsSL https://go.speakeasy.com/cli-install.sh | sh
-      displayName: 'Install Speakeasy CLI'
+#- stage: 'Validate_Spec_Stage'
+#  jobs:
+#  - job: Validate_OpenAPI_Spec
+#    steps:
+#    - script: cat openapi.json
+#      displayName: 'Display openapi.json Content'    
+#    - script: |
+#        # Assuming the OpenAPI spec is named 'openapi.yaml' and located at the root
+#        curl -X POST -H 'Content-Type: application/json' --data-binary @openapi.json https://validator.swagger.io/validator/debug
+#        #TODO@MUDIT: CALL INTERNAL SERVICE INSTEAD AND ADD LOGIC TO SHOW ERRORS AND FAIL PIPELINE BASED ON RESULT. 
+#      displayName: 'Validate OpenAPI Specification'
+#- stage: InstallCLI
+#  jobs:
+#  - job: Install_Speakeasy_CLI
+#    steps:
+#    - script: |
+#        curl -fsSL https://go.speakeasy.com/cli-install.sh | sh
+#      displayName: 'Install Speakeasy CLI'
 
 - stage: GenerateSDKs
   dependsOn: InstallCLI
