@@ -12,7 +12,7 @@ jobs:
   steps:
   - script: |
       # Install Speakeasy CLI
-      curl -fsSL https://speakeasyapi.dev/install.sh | sh
+      curl -fsSL https://go.speakeasy.com/cli-install.sh | sh
       speakeasy -v
     displayName: 'Install Speakeasy CLI'
     
