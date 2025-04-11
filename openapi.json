@@ -1,1418 +1,2305 @@
 {
-  "openapi": "3.0.4",
-  "info": {
-    "title": "Swagger Petstore - OpenAPI 3.0",
-    "description": "This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about\nSwagger at [https://swagger.io](https://swagger.io). In the third iteration of the pet store, we've switched to the design first approach!\nYou can now help us improve the API whether it's by making changes to the definition itself or to the code.\nThat way, with time, we can improve the API in general, and expose some of the new features in OAS3.\n\nSome useful links:\n- [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)\n- [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)",
-    "termsOfService": "https://swagger.io/terms/",
-    "contact": {
-      "email": "apiteam@swagger.io"
+    "openapi": "3.0.1",
+    "info": {
+        "title": "Workspaces API",
+        "description": "Docusign Workspaces API",
+        "termsOfService": "https://www.docusign.com/company/terms-and-conditions/web",
+        "contact": {
+            "name": "Docusign Developer Center",
+            "url": "https://developers.docusign.com",
+            "email": "devcenter@docusign.com"
+        },
+        "version": "v1"
     },
-    "license": {
-      "name": "Apache 2.0",
-      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
-    },
-    "version": "1.0.12"
-  },
-  "externalDocs": {
-    "description": "Find out more about Swagger",
-    "url": "https://swagger.io"
-  },
-  "servers": [
-    {
-      "url": "https://petstore3.swagger.io/api/v3"
-    }
-  ],
-  "tags": [
-    {
-      "name": "pet",
-      "description": "Everything about your Pets",
-      "externalDocs": {
-        "description": "Find out more",
-        "url": "https://swagger.io"
-      }
-    },
-    {
-      "name": "store",
-      "description": "Access to Petstore orders",
-      "externalDocs": {
-        "description": "Find out more about our store",
-        "url": "https://swagger.io"
-      }
-    },
-    {
-      "name": "user",
-      "description": "Operations about user"
-    }
-  ],
-  "paths": {
-    "/pet": {
-      "put": {
-        "tags": [
-          "pet"
-        ],
-        "summary": "Update an existing pet.",
-        "description": "Update an existing pet by Id.",
-        "operationId": "updatePet",
-        "requestBody": {
-          "description": "Update an existent pet in the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Pet"
-              }
+    "servers": [
+        {
+            "url": "https://localhost:5001",
+            "description": "Local Development"
+        },
+        {
+            "url": "https://api.docusign.com",
+            "description": "Production server"
+        },
+        {
+            "url": "https://api-d.docusign.com",
+            "description": "Demo server"
+        },
+        {
+            "url": "https://api-s.docusign.com",
+            "description": "Staging server"
+        },
+        {
+            "url": "https://api.dev.docusign.com",
+            "description": "Dev server"
+        }
+    ],
+    "paths": {
+        "/v1/accounts/{accountId}/workspaces/{workspaceId}/documents": {
+            "get": {
+                "tags": [
+                    "WorkspaceDocuments"
+                ],
+                "summary": "Get documents in the workspace accessible to the calling user",
+                "description": "This operation retrieves the documents in the workspace that are accessible to the calling user. Documents may be added directly or automatically through tasks such as envelopes. Documents may be used to create envelopes.\n\nPagination is supported by passing `start_position` and `count` in the request. The response will include `resultSetSize`, `start_position`, and `end_position` which may be utilized for subsequent requests.",
+                "operationId": "getWorkspaceDocuments",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "The ID of the account",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "workspaceId",
+                        "in": "path",
+                        "description": "The ID of the workspace",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "count",
+                        "in": "query",
+                        "description": "Number of documents to return. Defaults to the maximum which is 100",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "start_position",
+                        "in": "query",
+                        "description": "Position of the first item in the total results. Defaults to 0",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "name_filter",
+                        "in": "query",
+                        "description": "Filter documents where Name contains the filter. Defaults to null, to not filter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Documents successfully retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetWorkspaceDocumentsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. See ErrorCode and Message for details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized to make this request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-ds-methodname": "getWorkspaceDocuments",
+                "x-ds-method": "getWorkspaceDocuments",
+                "x-ds-service": "Workspace Documents"
             },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/Pet"
-              }
+            "post": {
+                "tags": [
+                    "WorkspaceDocuments"
+                ],
+                "summary": "Add a document to a workspace via file contents upload",
+                "description": "This operation adds a document to a workspace via file contents upload. The file is passed in the request body as a multipart/form-data file. The file name is used as the document name.\n\nOnce added, it may be used to create an envelope associated with the workspace.",
+                "operationId": "addWorkspaceDocument",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "The ID of the account",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "workspaceId",
+                        "in": "path",
+                        "description": "The ID of the workspace",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "description": "The file within the multipart/form-data",
+                                        "format": "binary"
+                                    }
+                                }
+                            },
+                            "encoding": {
+                                "file": {
+                                    "style": "form"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Document successfully added",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateWorkspaceDocumentResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. See ErrorCode and Message for details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized to make this request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-ds-methodname": "addWorkspaceDocument",
+                "x-ds-method": "addWorkspaceDocument",
+                "x-ds-service": "Workspace Documents"
+            }
+        },
+        "/v1/accounts/{accountId}/workspaces/{workspaceId}/documents/{documentId}": {
+            "get": {
+                "tags": [
+                    "WorkspaceDocuments"
+                ],
+                "summary": "Get information about the document",
+                "description": "This operation retrieves information about the document. The response includes the document ID, name, and metadata.",
+                "operationId": "getWorkspaceDocument",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "The ID of the account",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "workspaceId",
+                        "in": "path",
+                        "description": "The ID of the workspace",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "documentId",
+                        "in": "path",
+                        "description": "The ID of the document",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Document successfully retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetWorkspaceDocumentResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. See ErrorCode and Message for details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized to make this request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-ds-methodname": "getWorkspaceDocument",
+                "x-ds-method": "getWorkspaceDocument",
+                "x-ds-service": "Workspace Documents"
             },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/Pet"
-              }
+            "delete": {
+                "tags": [
+                    "WorkspaceDocuments"
+                ],
+                "summary": "Deletes a document in the workspace",
+                "description": "This operation permanently deletes a document by ID.",
+                "operationId": "deleteWorkspaceDocument",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "The ID of the account",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "workspaceId",
+                        "in": "path",
+                        "description": "The ID of the workspace",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "documentId",
+                        "in": "path",
+                        "description": "The ID of the document",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Document has been successfully deleted"
+                    },
+                    "400": {
+                        "description": "Bad request. See ErrorCode and Message for details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized to make this request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-ds-methodname": "deleteWorkspaceDocument",
+                "x-ds-method": "deleteWorkspaceDocument",
+                "x-ds-service": "Workspace Documents"
             }
-          },
-          "required": true
         },
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pet"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pet"
-                }
-              }
+        "/v1/accounts/{accountId}/workspaces/{workspaceId}/documents/{documentId}/contents": {
+            "get": {
+                "tags": [
+                    "WorkspaceDocuments"
+                ],
+                "summary": "Get the file contents of the document",
+                "description": "This operation retrieves the file contents of the document. The file is returned as a stream in the response body. The Content-Disposition response header contains the document name as the `filename`.",
+                "operationId": "getWorkspaceDocumentContents",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "The ID of the account",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "workspaceId",
+                        "in": "path",
+                        "description": "The ID of the workspace",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "documentId",
+                        "in": "path",
+                        "description": "The ID of the document",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Document successfully retrieved.",
+                        "content": {
+                            "application/octet-stream": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. See ErrorCode and Message for details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized to make this request.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-ds-methodname": "getWorkspaceDocumentContents",
+                "x-ds-method": "getWorkspaceDocumentContents",
+                "x-ds-service": "Workspace Documents"
             }
-          },
-          "400": {
-            "description": "Invalid ID supplied"
-          },
-          "404": {
-            "description": "Pet not found"
-          },
-          "422": {
-            "description": "Validation exception"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
         },
-        "security": [
-          {
-            "petstore_auth": [
-              "write:pets",
-              "read:pets"
-            ]
-          }
-        ]
-      },
-      "post": {
-        "tags": [
-          "pet"
-        ],
-        "summary": "Add a new pet to the store.",
-        "description": "Add a new pet to the store.",
-        "operationId": "addPet",
-        "requestBody": {
-          "description": "Create a new pet in the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Pet"
-              }
+        "/v1/accounts/{accountId}/workspaces/{workspaceId}/users": {
+            "get": {
+                "tags": [
+                    "WorkspaceUsers"
+                ],
+                "summary": "Retrieves the list of users in the given workspace",
+                "description": "This operations retrieves the users in a workspace. Users sent envelopes or assigned tasks will automatically be added to the workspace with the Participate role.\n\nPagination is supported by passing `start_position` and `count` in the request. The response will include `resultSetSize`, `start_position`, and `end_position` which may be utilized for subsequent requests.",
+                "operationId": "getWorkspaceUsers",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "The ID of the account",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "workspaceId",
+                        "in": "path",
+                        "description": "The ID of the workspace",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "count",
+                        "in": "query",
+                        "description": "Number of workspace users to return. Defaults to the maximum which is 100.",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "start_position",
+                        "in": "query",
+                        "description": "Position of the first item in the total results. Defaults to 0.",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "filter",
+                        "in": "query",
+                        "description": "Returns workspace users filtered by Name and Email",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sorts results. Options are `first_name_asc`, `first_name_desc`, `last_name_asc`, `last_name_desc`, `email_asc`, `email_desc`. Defaults to `last_name_desc`",
+                        "schema": {
+                            "$ref": "#/components/schemas/GetWorkspaceUsersSortingOption"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The workspace user was successfully retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetWorkspaceUsersResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. See ErrorCode and Message for details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized to make this request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "The workspace was not found"
+                    }
+                },
+                "x-ds-methodname": "getWorkspaceUsers",
+                "x-ds-method": "getWorkspaceUsers",
+                "x-ds-service": "Workspace Users"
             },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/Pet"
-              }
+            "post": {
+                "tags": [
+                    "WorkspaceUsers"
+                ],
+                "summary": "Adds a user to the workspace by email address",
+                "description": "This operation manually adds an internal or external user to a specific workspace by email address. Users within the account are considered \"Internal\" and may be assigned any role. Users outside the account are considered \"External\" and may only be assigned the Participate role. This operation is not typically needed for adding external participants to a Workspace as they will be automatically added as tasks are assigned.\n\nAvailable role IDs can be retrieved via the Assignable Roles operation on a workspace. If the `role_id` is not passed, the user is added with the Participate role.",
+                "operationId": "addWorkspaceUser",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "The ID of the account",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "workspaceId",
+                        "in": "path",
+                        "description": "The ID of the workspace",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "The user details",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkspaceUserForCreate"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkspaceUserForCreate"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkspaceUserForCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "The user was successfully added to the workspace",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateWorkspaceUserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The user could not be added to the workspace",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized to make this request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-ds-methodname": "addWorkspaceUser",
+                "x-ds-method": "addWorkspaceUser",
+                "x-ds-service": "Workspace Users"
+            }
+        },
+        "/v1/accounts/{accountId}/workspaces/{workspaceId}/users/{userId}": {
+            "put": {
+                "tags": [
+                    "WorkspaceUsers"
+                ],
+                "summary": "Updates the specified user's role",
+                "description": "This operation updates the specified user's role in the workspace. Users within the account are considered \"Internal\" and may be assigned any role. Users outside the account are considered \"External\" and may only be assigned \"External\" roles.",
+                "operationId": "updateWorkspaceUser",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "The ID of the account",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "workspaceId",
+                        "in": "path",
+                        "description": "The ID of the workspace",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "The ID of the user to update",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "The user details to update to including the RoleId",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkspaceUserForUpdate"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkspaceUserForUpdate"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkspaceUserForUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The workspace user was successfully updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateWorkspaceUserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The workspace user could not be updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized to make this request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-ds-methodname": "updateWorkspaceUser",
+                "x-ds-method": "updateWorkspaceUser",
+                "x-ds-service": "Workspace Users"
+            }
+        },
+        "/v1/accounts/{accountId}/workspaces/{workspaceId}/users/{userId}/actions/revoke-access": {
+            "post": {
+                "tags": [
+                    "WorkspaceUsers"
+                ],
+                "summary": "Revokes the specified user's access to the workspace",
+                "description": "This operation revokes the specified user's access to the workspace. The optional `revocation_date` may be set to schedule revocation in the future. If not specified, the revocation will be immediate.",
+                "operationId": "revokeWorkspaceUserAccess",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "The ID of the account",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "workspaceId",
+                        "in": "path",
+                        "description": "The ID of the workspace to revoke access from",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "The ID of the user to be revoked from the workspace",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Optional details. Allows scheduling the revocation for the future",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RevokeWorkspaceUserDetails"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RevokeWorkspaceUserDetails"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RevokeWorkspaceUserDetails"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "The workspace user's access was successfully revoked"
+                    },
+                    "400": {
+                        "description": "Bad request. See ErrorCode and Message for details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized to make this request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-ds-methodname": "revokeWorkspaceUserAccess",
+                "x-ds-method": "revokeWorkspaceUserAccess",
+                "x-ds-service": "Workspace Users"
+            }
+        },
+        "/v1/accounts/{accountId}/workspaces/{workspaceId}/users/{userId}/actions/restore-access": {
+            "post": {
+                "tags": [
+                    "WorkspaceUsers"
+                ],
+                "summary": "Restores the specified user's access to the workspace",
+                "description": "This operation restores the specified user's access to the workspace. The user must have been previously revoked from the workspace. The access is immediately restored.",
+                "operationId": "restoreWorkspaceUserAccess",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "The ID of the account",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "workspaceId",
+                        "in": "path",
+                        "description": "The ID of the workspace to restore access",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "The ID of the user to be restored to the workspace",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The workspace user's access was successfully restored"
+                    },
+                    "400": {
+                        "description": "Bad request. See ErrorCode and Message for details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized to make this request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-ds-methodname": "restoreWorkspaceUserAccess",
+                "x-ds-method": "restoreWorkspaceUserAccess",
+                "x-ds-service": "Workspace Users"
+            }
+        },
+        "/v1/accounts/{accountId}/workspaces": {
+            "get": {
+                "tags": [
+                    "Workspaces"
+                ],
+                "summary": "Gets workspaces available to the calling user",
+                "description": "This operation retrieves a list of workspaces available to the calling user. It returns basic information about each workspace, including its unique identifier (ID), name, and metadata such as when it was created and by whom.\n\nPagination is supported by passing `start_position` and `count` in the request. The response will include `resultSetSize`, `start_position`, and `end_position` which may be utilized for subsequent requests.",
+                "operationId": "getWorkspaces",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "The ID of the account",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "count",
+                        "in": "query",
+                        "description": "Number of workspaces to return. Defaults to the maximum which is 100",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "start_position",
+                        "in": "query",
+                        "description": "Position of the first item in the total results. Defaults to 0",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Workspaces successfully retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetWorkspacesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. See ErrorCode and Message for details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized to make this request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-ds-methodname": "getWorkspaces",
+                "x-ds-method": "getWorkspaces",
+                "x-ds-service": "Workspaces"
             },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/Pet"
-              }
+            "post": {
+                "tags": [
+                    "Workspaces"
+                ],
+                "summary": "Creates a new workspace",
+                "description": "This operation creates a new workspace. The calling user is automatically added as a member of the workspace with the role of Manage.\n\nOnce created, the `workspace_id` is utilized to associate tasks such as envelopes. Participants on tasks will automatically be added to the workspace with the Participate role.",
+                "operationId": "createWorkspace",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "The ID of the account",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "The details of the workspace to be created including the name",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateWorkspaceBody"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateWorkspaceBody"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateWorkspaceBody"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Workspace successfully created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateWorkspaceResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. See ErrorCode and Message for details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized to make this request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-ds-methodname": "createWorkspace",
+                "x-ds-method": "createWorkspace",
+                "x-ds-service": "Workspaces"
             }
-          },
-          "required": true
         },
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pet"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pet"
-                }
-              }
+        "/v1/accounts/{accountId}/workspaces/{workspaceId}": {
+            "get": {
+                "tags": [
+                    "Workspaces"
+                ],
+                "summary": "Returns details about the workspace",
+                "description": "This operation retrieves details about a specific workspace. It returns the workspace's unique identifier (ID), name, and metadata such as when it was created and by whom.",
+                "operationId": "getWorkspace",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "The ID of the account",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "workspaceId",
+                        "in": "path",
+                        "description": "The ID of the workspace",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Workspace successfully retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetWorkspaceResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. See ErrorCode and Message for details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized to make this request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-ds-methodname": "getWorkspace",
+                "x-ds-method": "getWorkspace",
+                "x-ds-service": "Workspaces"
             }
-          },
-          "400": {
-            "description": "Invalid input"
-          },
-          "422": {
-            "description": "Validation exception"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
         },
-        "security": [
-          {
-            "petstore_auth": [
-              "write:pets",
-              "read:pets"
-            ]
-          }
-        ]
-      }
+        "/v1/accounts/{accountId}/workspaces/{workspaceId}/assignable-roles": {
+            "get": {
+                "tags": [
+                    "Workspaces"
+                ],
+                "summary": "Returns the roles the caller can assign to workspace users",
+                "description": "This operation returns roles that are assignable to users in the workspace based on the caller's role in the workspace. Roles available include Manage (internal) and Participate (external). Participate is the default role.\n\nUsers within the account are considered \"Internal\" and may be assigned any role. Users outside the account are considered \"External\" and may only be assigned \"External\" roles.\n\nPagination is supported by passing `start_position` and `count` in the request. The response will include `resultSetSize`, `start_position`, and `end_position` which may be utilized for subsequent requests.",
+                "operationId": "getWorkspaceAssignableRoles",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "The ID of the account",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "workspaceId",
+                        "in": "path",
+                        "description": "The ID of the workspace",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "filter",
+                        "in": "query",
+                        "description": "A search filter that returns assignable roles by the beginning of the role name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "start_position",
+                        "in": "query",
+                        "description": "The index position within the total result set from which to start returning values. The default value is 0",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "count",
+                        "in": "query",
+                        "description": "The number of results to return. This value must be a number between 1 and 100 (default)",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Assignable roles successfully retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetWorkspaceAssignableRolesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. See ErrorCode and Message for details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized to make this request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-ds-methodname": "getWorkspaceAssignableRoles",
+                "x-ds-method": "getWorkspaceAssignableRoles",
+                "x-ds-service": "Workspaces"
+            }
+        },
+        "/v1/accounts/{accountId}/workspaces/{workspaceId}/envelopes": {
+            "post": {
+                "tags": [
+                    "Workspaces"
+                ],
+                "summary": "Creates an envelope with the given documents. Returns the ID of the created envelope",
+                "description": "This operation creates an envelope associated with the workspace. Using the `envelope_id` from the response, eSignature APIs may be utilized to modify the envelope and ultimately send it.\n\nEnvelope recipients will automatically be granted Participate access to the workspace. Envelope recipients will receive consolidated notifications from Docusign Workspaces rather than standard individual envelope notifications.\n\nDocusign Connect events may be utilized to receive updates to individual envelope events.\n\nThe `envelopes` operation on the workspace may be utilized to query the status of all the envelopes in the workspace.\n\nWhen `document_ids` is empty or excluded, the envelope is created without any documents from the workspace. eSignature API calls, including adding documents and templates, may be utilized to modify the envelope before it is sent. The eSignature API must be utilized to send the envelope.",
+                "operationId": "createWorkspaceEnvelope",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "The ID of the account",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "workspaceId",
+                        "in": "path",
+                        "description": "The ID of the workspace",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "The details of the envelope to be created including the list of document IDs to add to the envelope",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkspaceEnvelopeForCreate"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkspaceEnvelopeForCreate"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WorkspaceEnvelopeForCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "The envelope was successfully created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateWorkspaceEnvelopeResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. See ErrorCode and Message for details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized to make this request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-ds-methodname": "createWorkspaceEnvelope",
+                "x-ds-method": "createWorkspaceEnvelope",
+                "x-ds-service": "Workspaces"
+            },
+            "get": {
+                "tags": [
+                    "Workspaces"
+                ],
+                "summary": "Returns the envelopes associated with the given workspace",
+                "description": "This operation retrieves a list of all associated workspace envelopes. The `status` on each envelope can be used to track envelope progress. Based on the permissions of the caller, additional envelope details may be retrieved from the eSignature API using the `envelope_id`.",
+                "operationId": "getWorkspaceEnvelopes",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "path",
+                        "description": "The ID of the account",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "workspaceId",
+                        "in": "path",
+                        "description": "The ID of the workspace",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Envelopes successfully retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetWorkspaceEnvelopesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. See ErrorCode and Message for details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized to make this request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorDetails"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-ds-methodname": "getWorkspaceEnvelopes",
+                "x-ds-method": "getWorkspaceEnvelopes",
+                "x-ds-service": "Workspaces"
+            }
+        }
     },
-    "/pet/findByStatus": {
-      "get": {
-        "tags": [
-          "pet"
-        ],
-        "summary": "Finds Pets by status.",
-        "description": "Multiple status values can be provided with comma separated strings.",
-        "operationId": "findPetsByStatus",
-        "parameters": [
-          {
-            "name": "status",
-            "in": "query",
-            "description": "Status values that need to be considered for filter",
-            "required": false,
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "default": "available",
-              "enum": [
-                "available",
-                "pending",
-                "sold"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Pet"
-                  }
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Pet"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid status value"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "petstore_auth": [
-              "write:pets",
-              "read:pets"
-            ]
-          }
-        ]
-      }
-    },
-    "/pet/findByTags": {
-      "get": {
-        "tags": [
-          "pet"
-        ],
-        "summary": "Finds Pets by tags.",
-        "description": "Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.",
-        "operationId": "findPetsByTags",
-        "parameters": [
-          {
-            "name": "tags",
-            "in": "query",
-            "description": "Tags to filter by",
-            "required": false,
-            "explode": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Pet"
-                  }
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Pet"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid tag value"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "petstore_auth": [
-              "write:pets",
-              "read:pets"
-            ]
-          }
-        ]
-      }
-    },
-    "/pet/{petId}": {
-      "get": {
-        "tags": [
-          "pet"
-        ],
-        "summary": "Find pet by ID.",
-        "description": "Returns a single pet.",
-        "operationId": "getPetById",
-        "parameters": [
-          {
-            "name": "petId",
-            "in": "path",
-            "description": "ID of pet to return",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pet"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pet"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid ID supplied"
-          },
-          "404": {
-            "description": "Pet not found"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "api_key": []
-          },
-          {
-            "petstore_auth": [
-              "write:pets",
-              "read:pets"
-            ]
-          }
-        ]
-      },
-      "post": {
-        "tags": [
-          "pet"
-        ],
-        "summary": "Updates a pet in the store with form data.",
-        "description": "Updates a pet resource based on the form data.",
-        "operationId": "updatePetWithForm",
-        "parameters": [
-          {
-            "name": "petId",
-            "in": "path",
-            "description": "ID of pet that needs to be updated",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          },
-          {
-            "name": "name",
-            "in": "query",
-            "description": "Name of pet that needs to be updated",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "description": "Status of pet that needs to be updated",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pet"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pet"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid input"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "petstore_auth": [
-              "write:pets",
-              "read:pets"
-            ]
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "pet"
-        ],
-        "summary": "Deletes a pet.",
-        "description": "Delete a pet.",
-        "operationId": "deletePet",
-        "parameters": [
-          {
-            "name": "api_key",
-            "in": "header",
-            "description": "",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "petId",
-            "in": "path",
-            "description": "Pet id to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Pet deleted"
-          },
-          "400": {
-            "description": "Invalid pet value"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "petstore_auth": [
-              "write:pets",
-              "read:pets"
-            ]
-          }
-        ]
-      }
-    },
-    "/pet/{petId}/uploadImage": {
-      "post": {
-        "tags": [
-          "pet"
-        ],
-        "summary": "Uploads an image.",
-        "description": "Upload image of the pet.",
-        "operationId": "uploadFile",
-        "parameters": [
-          {
-            "name": "petId",
-            "in": "path",
-            "description": "ID of pet to update",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          },
-          {
-            "name": "additionalMetadata",
-            "in": "query",
-            "description": "Additional Metadata",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/octet-stream": {
-              "schema": {
+    "components": {
+        "schemas": {
+            "CreateWorkspaceBody": {
+                "required": [
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the workspace",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "CreateWorkspaceBody"
+            },
+            "CreateWorkspaceDocumentOwner": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "first_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "CreateWorkspaceDocumentOwner"
+            },
+            "CreateWorkspaceDocumentResponse": {
+                "type": "object",
+                "properties": {
+                    "document_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "owner_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "size": {
+                        "type": "integer",
+                        "format": "int64",
+                        "nullable": true
+                    },
+                    "created_date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "last_updated_date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "owner": {
+                        "$ref": "#/components/schemas/CreateWorkspaceDocumentOwner"
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "CreateWorkspaceDocumentResponse"
+            },
+            "CreateWorkspaceEnvelopeResponse": {
+                "type": "object",
+                "properties": {
+                    "envelope_id": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "CreateWorkspaceEnvelopeResponse"
+            },
+            "CreateWorkspaceResponse": {
+                "type": "object",
+                "properties": {
+                    "workspace_id": {
+                        "type": "string",
+                        "description": "The ID of the workspace",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the workspace",
+                        "nullable": true
+                    },
+                    "created_date": {
+                        "type": "string",
+                        "description": "The date the workspace was created",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_by_user_id": {
+                        "type": "string",
+                        "description": "The ID of the user who created the workspace",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "workspace_owner_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "description": "The list of user IDs of the workspace owners",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "CreateWorkspaceResponse"
+            },
+            "CreateWorkspaceUserResponse": {
+                "type": "object",
+                "properties": {
+                    "workspace_id": {
+                        "type": "string",
+                        "description": "The ID of the workspace",
+                        "format": "uuid"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "description": "The ID of the user",
+                        "format": "uuid"
+                    },
+                    "role_id": {
+                        "type": "string",
+                        "description": "The ID of the role assigned to the user",
+                        "format": "uuid"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "The email of the user",
+                        "nullable": true
+                    },
+                    "first_name": {
+                        "type": "string",
+                        "description": "The first name of the user",
+                        "nullable": true
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "description": "The last name of the user",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "CreateWorkspaceUserResponse"
+            },
+            "ErrorDetails": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "A brief message describing the error condition",
+                        "nullable": true
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "description": "A standardized code that generalizes the specific error",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "description": "The error response object for the Workspaces API",
+                "x-ds-definition-name": "ErrorDetails"
+            },
+            "GetWorkspaceAssignableRolesResponse": {
+                "required": [
+                    "roles"
+                ],
+                "type": "object",
+                "properties": {
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkspaceRoleSummary"
+                        },
+                        "description": "The list of roles that can be assigned to the workspace",
+                        "nullable": true
+                    },
+                    "result_set_size": {
+                        "type": "integer",
+                        "description": "The number of roles returned in the response. Always equal or less than the `count` of the request",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "start_position": {
+                        "type": "integer",
+                        "description": "Position of the first item in the total results",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "end_position": {
+                        "type": "integer",
+                        "description": "Position of the last item in the total results",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "total_row_count": {
+                        "type": "integer",
+                        "description": "The total number of roles applicable to the request regardless of pagination. It may not always be computed",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "current_role_id": {
+                        "type": "string",
+                        "description": "The optional ID of the current role. It may not always be computed",
+                        "format": "uuid",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "GetWorkspaceAssignableRolesResponse"
+            },
+            "GetWorkspaceDocumentResponse": {
+                "required": [
+                    "document_id",
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "workspace_id": {
+                        "type": "string",
+                        "description": "The ID of the workspace",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "document_id": {
+                        "type": "string",
+                        "description": "The ID of the document",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "The name of the document"
+                    },
+                    "owner_id": {
+                        "type": "string",
+                        "description": "The ID of the owner of the document",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "size": {
+                        "type": "integer",
+                        "description": "The size of the document in bytes",
+                        "format": "int64",
+                        "nullable": true
+                    },
+                    "created_date": {
+                        "type": "string",
+                        "description": "The date the document was created",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "content_type": {
+                        "type": "string",
+                        "description": "The document content type",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "GetWorkspaceDocumentResponse"
+            },
+            "GetWorkspaceDocumentsResponse": {
+                "type": "object",
+                "properties": {
+                    "documents": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkspaceDocument"
+                        },
+                        "description": "The document summary list. Includes the ID, name, and metadata",
+                        "nullable": true
+                    },
+                    "result_set_size": {
+                        "type": "integer",
+                        "description": "The number of documents returned in the response. Always equal or less than the `count` of the request",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "start_position": {
+                        "type": "integer",
+                        "description": "Position of the first item in the total results",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "end_position": {
+                        "type": "integer",
+                        "description": "Position of the last item in the total results",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "total_row_count": {
+                        "type": "integer",
+                        "description": "The total number of documents in the workspace applicable to the request regardless of pagination. It may not always be computed",
+                        "format": "int32",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "GetWorkspaceDocumentsResponse"
+            },
+            "GetWorkspaceEnvelopesResponse": {
+                "required": [
+                    "envelopes"
+                ],
+                "type": "object",
+                "properties": {
+                    "envelopes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkspaceEnvelopeSummary"
+                        },
+                        "description": "The summary list of envelopes associated with the workspace",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "GetWorkspaceEnvelopesResponse"
+            },
+            "GetWorkspaceResponse": {
+                "required": [
+                    "workspace_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "workspace_id": {
+                        "type": "string",
+                        "description": "The ID of the workspace",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the workspace",
+                        "nullable": true
+                    },
+                    "created_date": {
+                        "type": "string",
+                        "description": "The date the workspace was created",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_by_user_id": {
+                        "type": "string",
+                        "description": "The ID of the user who created the workspace",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "workspace_owner_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "description": "The list of user IDs of the workspace owners",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "description": "The details of a single workspace",
+                "x-ds-definition-name": "GetWorkspaceResponse"
+            },
+            "GetWorkspaceUsersResponse": {
+                "required": [
+                    "users"
+                ],
+                "type": "object",
+                "properties": {
+                    "users": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkspaceUserSummary"
+                        },
+                        "description": "The user summary list. Includes the ID, name, and metadata such as the role ID and role name",
+                        "nullable": true
+                    },
+                    "result_set_size": {
+                        "type": "integer",
+                        "description": "The number of users returned in the response. Always equal or less than the `count` of the request",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "start_position": {
+                        "type": "integer",
+                        "description": "Position of the first item in the total results",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "end_position": {
+                        "type": "integer",
+                        "description": "Position of the last item in the total results",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "total_row_count": {
+                        "type": "integer",
+                        "description": "The total number of users in the workspace applicable to the request regardless of pagination. It may not always be computed",
+                        "format": "int32",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "GetWorkspaceUsersResponse"
+            },
+            "GetWorkspaceUsersSortingOption": {
+                "enum": [
+                    "first_name_asc",
+                    "last_name_asc",
+                    "email_asc",
+                    "first_name_desc",
+                    "last_name_desc",
+                    "email_desc"
+                ],
                 "type": "string",
-                "format": "binary"
-              }
+                "x-ds-definition-name": "GetWorkspaceUsersSortingOption"
+            },
+            "GetWorkspacesResponse": {
+                "type": "object",
+                "properties": {
+                    "workspaces": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkspaceSummary"
+                        },
+                        "description": "The workspace summary list. Includes the ID, name, and creation metadata",
+                        "nullable": true
+                    },
+                    "result_set_size": {
+                        "type": "integer",
+                        "description": "The number of workspaces returned in the response. Always equal or less than the `count` of the request",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "start_position": {
+                        "type": "integer",
+                        "description": "Position of the first item in the total results",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "end_position": {
+                        "type": "integer",
+                        "description": "Position of the last item in the total results",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "total_row_count": {
+                        "type": "integer",
+                        "description": "The total number of workspaces applicable to the request regardless of pagination. It may not always be computed",
+                        "format": "int32",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "GetWorkspacesResponse"
+            },
+            "RevokeWorkspaceUserDetails": {
+                "type": "object",
+                "properties": {
+                    "revocation_date": {
+                        "type": "string",
+                        "description": "The optional date in the future to initiate the revocation. If not specified, the revocation will be immediate",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "RevokeWorkspaceUserDetails"
+            },
+            "UpdateWorkspaceUserResponse": {
+                "type": "object",
+                "properties": {
+                    "role_id": {
+                        "type": "string",
+                        "description": "The ID of the role assigned to the user",
+                        "format": "uuid"
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "UpdateWorkspaceUserResponse"
+            },
+            "WorkspaceDocument": {
+                "required": [
+                    "document_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "document_id": {
+                        "type": "string",
+                        "description": "The ID of the document",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the document",
+                        "nullable": true
+                    },
+                    "owner_id": {
+                        "type": "string",
+                        "description": "The ID of the user who owns the document",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "size": {
+                        "type": "integer",
+                        "description": "The size of the document in bytes",
+                        "format": "int64",
+                        "nullable": true
+                    },
+                    "created_date": {
+                        "type": "string",
+                        "description": "The date the document was created",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "last_updated_date": {
+                        "type": "string",
+                        "description": "The date the document was last updated",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "owner": {
+                        "$ref": "#/components/schemas/WorkspaceDocumentOwner"
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "WorkspaceDocument"
+            },
+            "WorkspaceDocumentOwner": {
+                "type": "object",
+                "properties": {
+                    "first_name": {
+                        "type": "string",
+                        "description": "The first name of the document owner",
+                        "nullable": true
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "description": "The last name of the document owner",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "WorkspaceDocumentOwner"
+            },
+            "WorkspaceEnvelopeForCreate": {
+                "required": [
+                    "envelope_name"
+                ],
+                "type": "object",
+                "properties": {
+                    "envelope_name": {
+                        "type": "string",
+                        "description": "The name for the envelope",
+                        "nullable": true
+                    },
+                    "document_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "description": "The optional list of document IDs to be added to the envelope",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "WorkspaceEnvelopeForCreate"
+            },
+            "WorkspaceEnvelopeSummary": {
+                "required": [
+                    "envelope_id",
+                    "status"
+                ],
+                "type": "object",
+                "properties": {
+                    "envelope_id": {
+                        "type": "string",
+                        "description": "The ID of the envelope",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "The status of the envelope in the workspace",
+                        "nullable": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "The envelope name",
+                        "nullable": true
+                    },
+                    "subject": {
+                        "type": "string",
+                        "description": "The envelope subject",
+                        "nullable": true
+                    },
+                    "created_date": {
+                        "type": "string",
+                        "description": "The date the envelope was created",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "last_updated_date": {
+                        "type": "string",
+                        "description": "The date the envelope was last updated",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "description": "The summary of the envelope in the workspace",
+                "x-ds-definition-name": "WorkspaceEnvelopeSummary"
+            },
+            "WorkspaceRoleSummary": {
+                "type": "object",
+                "properties": {
+                    "role_id": {
+                        "type": "string",
+                        "description": "The ID of the role",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the role",
+                        "nullable": true
+                    },
+                    "is_external": {
+                        "type": "boolean",
+                        "description": "If this role is applicable to any participant of a workspace including those outside the account. If false, this role may only be assigned to internal users of the same account",
+                        "nullable": true
+                    },
+                    "created_date": {
+                        "type": "string",
+                        "description": "The date the role was created",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "WorkspaceRoleSummary"
+            },
+            "WorkspaceSummary": {
+                "type": "object",
+                "properties": {
+                    "workspace_id": {
+                        "type": "string",
+                        "description": "The ID of the workspace",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the workspace",
+                        "nullable": true
+                    },
+                    "created_date": {
+                        "type": "string",
+                        "description": "The date the workspace was created",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_by_user_id": {
+                        "type": "string",
+                        "description": "The ID of the user who created the workspace",
+                        "format": "uuid"
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "WorkspaceSummary"
+            },
+            "WorkspaceUserForCreate": {
+                "required": [
+                    "email",
+                    "first_name",
+                    "last_name"
+                ],
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "The email address of the added user. May be an internal user to the account or an external user"
+                    },
+                    "first_name": {
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "The first name of the added user"
+                    },
+                    "last_name": {
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "The last name of the added user"
+                    },
+                    "role_id": {
+                        "type": "string",
+                        "description": "The optional Role ID to assign to the user. Defaults to the \"Participate\" role",
+                        "format": "uuid",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "WorkspaceUserForCreate"
+            },
+            "WorkspaceUserForUpdate": {
+                "type": "object",
+                "properties": {
+                    "role_id": {
+                        "type": "string",
+                        "description": "The ID of the role to update to",
+                        "format": "uuid"
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "WorkspaceUserForUpdate"
+            },
+            "WorkspaceUserSummary": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "string",
+                        "description": "The ID of the user",
+                        "format": "uuid"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "The email of the user",
+                        "nullable": true
+                    },
+                    "first_name": {
+                        "type": "string",
+                        "description": "The first name of the user",
+                        "nullable": true
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "description": "The last name of the user",
+                        "nullable": true
+                    },
+                    "role_id": {
+                        "type": "string",
+                        "description": "The ID of the users's role",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "role_name": {
+                        "type": "string",
+                        "description": "The name of the user's role",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "WorkspaceUserSummary"
+            },
+            "Workspaces": {
+                "type": "object",
+                "properties": {
+                    "workspaces": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkspaceSummary"
+                        },
+                        "description": "The workspace summary list. Includes the ID, name, and creation metadata",
+                        "nullable": true
+                    },
+                    "result_set_size": {
+                        "type": "integer",
+                        "description": "The number of workspaces returned in the response. Always equal or less than the `count` of the request",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "start_position": {
+                        "type": "integer",
+                        "description": "Position of the first item in the total results",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "end_position": {
+                        "type": "integer",
+                        "description": "Position of the last item in the total results",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "total_row_count": {
+                        "type": "integer",
+                        "description": "The total number of workspaces applicable to the request regardless of pagination. It may not always be computed",
+                        "format": "int32",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "GetWorkspacesResponse",
+                "description": "",
+                "x-ds-category": "Accounts",
+                "x-ds-order": "100",
+                "x-ms-summary": ""
+            },
+            "WorkspaceDocuments": {
+                "type": "object",
+                "properties": {
+                    "documents": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkspaceDocument"
+                        },
+                        "description": "The document summary list. Includes the ID, name, and metadata",
+                        "nullable": true
+                    },
+                    "result_set_size": {
+                        "type": "integer",
+                        "description": "The number of documents returned in the response. Always equal or less than the `count` of the request",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "start_position": {
+                        "type": "integer",
+                        "description": "Position of the first item in the total results",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "end_position": {
+                        "type": "integer",
+                        "description": "Position of the last item in the total results",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "total_row_count": {
+                        "type": "integer",
+                        "description": "The total number of documents in the workspace applicable to the request regardless of pagination. It may not always be computed",
+                        "format": "int32",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "GetWorkspaceDocumentsResponse",
+                "description": "",
+                "x-ds-category": "Accounts",
+                "x-ds-order": "100",
+                "x-ms-summary": ""
+            },
+            "WorkspaceUsers": {
+                "required": [
+                    "users"
+                ],
+                "type": "object",
+                "properties": {
+                    "users": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkspaceUserSummary"
+                        },
+                        "description": "The user summary list. Includes the ID, name, and metadata such as the role ID and role name",
+                        "nullable": true
+                    },
+                    "result_set_size": {
+                        "type": "integer",
+                        "description": "The number of users returned in the response. Always equal or less than the `count` of the request",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "start_position": {
+                        "type": "integer",
+                        "description": "Position of the first item in the total results",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "end_position": {
+                        "type": "integer",
+                        "description": "Position of the last item in the total results",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "total_row_count": {
+                        "type": "integer",
+                        "description": "The total number of users in the workspace applicable to the request regardless of pagination. It may not always be computed",
+                        "format": "int32",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false,
+                "x-ds-definition-name": "GetWorkspaceUsersResponse",
+                "description": "",
+                "x-ds-category": "Accounts",
+                "x-ds-order": "100",
+                "x-ms-summary": ""
             }
-          }
         },
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponse"
+        "securitySchemes": {
+            "OAuth2": {
+                "type": "oauth2",
+                "description": "JWT Bearer token from Docusign authorization server",
+                "flows": {
+                    "authorizationCode": {
+                        "authorizationUrl": "https://account-d.docusign.com/oauth/auth",
+                        "tokenUrl": "https://account-d.docusign.com/oauth/token",
+                        "scopes": {
+                            "signature": "Access to signature data",
+                            "dtr.company.read": "Read workspace profile information",
+                            "dtr.rooms.read": "Read workspace data",
+                            "dtr.rooms.write": "Update workspace data",
+                            "dtr.documents.write": "Modify workspace documents"
+                        }
+                    }
                 }
-              }
             }
-          },
-          "400": {
-            "description": "No file uploaded"
-          },
-          "404": {
-            "description": "Pet not found"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "petstore_auth": [
-              "write:pets",
-              "read:pets"
+        }
+    },
+    "security": [
+        {
+            "OAuth2": [
+                "signature",
+                "dtr.company.read",
+                "dtr.rooms.read",
+                "dtr.rooms.write",
+                "dtr.documents.write"
             ]
-          }
-        ]
-      }
-    },
-    "/store/inventory": {
-      "get": {
-        "tags": [
-          "store"
-        ],
-        "summary": "Returns pet inventories by status.",
-        "description": "Returns a map of status codes to quantities.",
-        "operationId": "getInventory",
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "integer",
-                    "format": "int32"
-                  }
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
+        }
+    ],
+    "tags": [
+        {
+            "name": "Workspaces",
+            "description": ""
         },
-        "security": [
-          {
-            "api_key": []
-          }
-        ]
-      }
-    },
-    "/store/order": {
-      "post": {
-        "tags": [
-          "store"
-        ],
-        "summary": "Place an order for a pet.",
-        "description": "Place a new order in the store.",
-        "operationId": "placeOrder",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Order"
-              }
-            },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/Order"
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/Order"
-              }
-            }
-          }
+        {
+            "name": "WorkspaceDocuments",
+            "description": ""
         },
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Order"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid input"
-          },
-          "422": {
-            "description": "Validation exception"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
+        {
+            "name": "WorkspaceUsers",
+            "description": ""
         }
-      }
-    },
-    "/store/order/{orderId}": {
-      "get": {
-        "tags": [
-          "store"
-        ],
-        "summary": "Find purchase order by ID.",
-        "description": "For valid response try integer IDs with value <= 5 or > 10. Other values will generate exceptions.",
-        "operationId": "getOrderById",
-        "parameters": [
-          {
-            "name": "orderId",
-            "in": "path",
-            "description": "ID of order that needs to be fetched",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Order"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/Order"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid ID supplied"
-          },
-          "404": {
-            "description": "Order not found"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "store"
-        ],
-        "summary": "Delete purchase order by identifier.",
-        "description": "For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors.",
-        "operationId": "deleteOrder",
-        "parameters": [
-          {
-            "name": "orderId",
-            "in": "path",
-            "description": "ID of the order that needs to be deleted",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "order deleted"
-          },
-          "400": {
-            "description": "Invalid ID supplied"
-          },
-          "404": {
-            "description": "Order not found"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/user": {
-      "post": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Create user.",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "createUser",
-        "requestBody": {
-          "description": "Created user object",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/User"
-              }
-            },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/User"
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/User"
-              }
-            }
-          }
+    ],
+    "x-ds-categories": [
+        {
+            "name": "Workspaces",
+            "summary": "",
+            "description": ""
         },
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
+        {
+            "name": "Accounts",
+            "summary": "",
+            "description": ""
         }
-      }
-    },
-    "/user/createWithList": {
-      "post": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Creates list of users with given input array.",
-        "description": "Creates list of users with given input array.",
-        "operationId": "createUsersWithListInput",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/user/login": {
-      "get": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Logs user into the system.",
-        "description": "Log into the system.",
-        "operationId": "loginUser",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "query",
-            "description": "The user name for login",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "password",
-            "in": "query",
-            "description": "The password for login in clear text",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "headers": {
-              "X-Rate-Limit": {
-                "description": "calls per hour allowed by the user",
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              },
-              "X-Expires-After": {
-                "description": "date in UTC when token expires",
-                "schema": {
-                  "type": "string",
-                  "format": "date-time"
-                }
-              }
-            },
-            "content": {
-              "application/xml": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid username/password supplied"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/user/logout": {
-      "get": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Logs out current logged in user session.",
-        "description": "Log user out of the system.",
-        "operationId": "logoutUser",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "successful operation"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/user/{username}": {
-      "get": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Get user by user name.",
-        "description": "Get user detail based on username.",
-        "operationId": "getUserByName",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "description": "The name that needs to be fetched. Use user1 for testing",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid username supplied"
-          },
-          "404": {
-            "description": "User not found"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Update user resource.",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "updateUser",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "description": "name that need to be deleted",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "Update an existent user in the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/User"
-              }
-            },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/User"
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/User"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "successful operation"
-          },
-          "400": {
-            "description": "bad request"
-          },
-          "404": {
-            "description": "user not found"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "user"
-        ],
-        "summary": "Delete user resource.",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "deleteUser",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "description": "The name that needs to be deleted",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User deleted"
-          },
-          "400": {
-            "description": "Invalid username supplied"
-          },
-          "404": {
-            "description": "User not found"
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Order": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64",
-            "example": 10
-          },
-          "petId": {
-            "type": "integer",
-            "format": "int64",
-            "example": 198772
-          },
-          "quantity": {
-            "type": "integer",
-            "format": "int32",
-            "example": 7
-          },
-          "shipDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "status": {
-            "type": "string",
-            "description": "Order Status",
-            "example": "approved",
-            "enum": [
-              "placed",
-              "approved",
-              "delivered"
-            ]
-          },
-          "complete": {
-            "type": "boolean"
-          }
-        },
-        "xml": {
-          "name": "order"
-        }
-      },
-      "Category": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64",
-            "example": 1
-          },
-          "name": {
-            "type": "string",
-            "example": "Dogs"
-          }
-        },
-        "xml": {
-          "name": "category"
-        }
-      },
-      "User": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64",
-            "example": 10
-          },
-          "username": {
-            "type": "string",
-            "example": "theUser"
-          },
-          "firstName": {
-            "type": "string",
-            "example": "John"
-          },
-          "lastName": {
-            "type": "string",
-            "example": "James"
-          },
-          "email": {
-            "type": "string",
-            "example": "john@email.com"
-          },
-          "password": {
-            "type": "string",
-            "example": "12345"
-          },
-          "phone": {
-            "type": "string",
-            "example": "12345"
-          },
-          "userStatus": {
-            "type": "integer",
-            "description": "User Status",
-            "format": "int32",
-            "example": 1
-          }
-        },
-        "xml": {
-          "name": "user"
-        }
-      },
-      "Tag": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "xml": {
-          "name": "tag"
-        }
-      },
-      "Pet": {
-        "required": [
-          "name",
-          "photoUrls"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64",
-            "example": 10
-          },
-          "name": {
-            "type": "string",
-            "example": "doggie"
-          },
-          "category": {
-            "$ref": "#/components/schemas/Category"
-          },
-          "photoUrls": {
-            "type": "array",
-            "xml": {
-              "wrapped": true
-            },
-            "items": {
-              "type": "string",
-              "xml": {
-                "name": "photoUrl"
-              }
-            }
-          },
-          "tags": {
-            "type": "array",
-            "xml": {
-              "wrapped": true
-            },
-            "items": {
-              "$ref": "#/components/schemas/Tag"
-            }
-          },
-          "status": {
-            "type": "string",
-            "description": "pet status in the store",
-            "enum": [
-              "available",
-              "pending",
-              "sold"
-            ]
-          }
-        },
-        "xml": {
-          "name": "pet"
-        }
-      },
-      "ApiResponse": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "type": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
-          }
-        },
-        "xml": {
-          "name": "##default"
-        }
-      },
-      "Error": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "code",
-          "message"
-        ]
-      }
-    },
-    "requestBodies": {
-      "Pet": {
-        "description": "Pet object that needs to be added to the store",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/Pet"
-            }
-          },
-          "application/xml": {
-            "schema": {
-              "$ref": "#/components/schemas/Pet"
-            }
-          }
-        }
-      },
-      "UserArray": {
-        "description": "List of user object",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/components/schemas/User"
-              }
-            }
-          }
-        }
-      }
-    },
-    "securitySchemes": {
-      "petstore_auth": {
-        "type": "oauth2",
-        "flows": {
-          "implicit": {
-            "authorizationUrl": "https://petstore3.swagger.io/oauth/authorize",
-            "scopes": {
-              "write:pets": "modify pets in your account",
-              "read:pets": "read your pets"
-            }
-          }
-        }
-      },
-      "api_key": {
-        "type": "apiKey",
-        "name": "api_key",
-        "in": "header"
-      }
-    }
-  }
+    ]
 }
