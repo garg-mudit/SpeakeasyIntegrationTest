@@ -9,7 +9,7 @@
             "url": "https://developers.docusign.com",
             "email": "devcenter@docusign.com"
         },
-        "version": "v1"
+        "version": "2.0"
     },
     "servers": [
         {
