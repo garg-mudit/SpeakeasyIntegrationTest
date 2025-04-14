@@ -21,6 +21,8 @@ jobs:
       speakeasy run
     displayName: 'Generate ${{ parameters.language }} SDK'
 
-  - publish: ./sdks/${{ parameters.language }}
+  - publish: ./docusign-test-js-sdk
     artifact: ${{ parameters.language }}-sdk
     displayName: 'Publish ${{ parameters.language }} SDK as artifact'
+
+ # - publish: ./sdks/${{ parameters.language }}
