@@ -12,9 +12,9 @@ jobs:
   steps:
   - template: install-speakeasy-cli.yml
   - template: clone-repo.yml
-      parameters:
-        repoUrl: "docuTest-${{parameters.language}}-sdk-private"
-        targetDirectory: "private-sdks/docuTest-${{parameters.language}}-sdk-private"
+    parameters:
+      repoUrl: "docuTest-${{parameters.language}}-sdk-private"
+      targetDirectory: "private-sdks/docuTest-${{parameters.language}}-sdk-private"
   - script: |
       speakeasy run
     displayName: 'Generate ${{ parameters.language }} SDK'
