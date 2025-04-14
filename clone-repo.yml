@@ -11,7 +11,6 @@ steps:
 
   - script: |
       echo "Cloning ${{ parameters.repoUrl }} into ${{ parameters.targetDirectory }}"
-      git clone https://$(GITHUB_PAT)@${{ parameters.repoUrl }} ${{ parameters.targetDirectory }}
-    env:
-      GITHUB_PAT: $(GITHUB_PAT)
+#      git clone https://$(GITHUB_PAT)@${{ parameters.repoUrl }} ${{ parameters.targetDirectory }}
+      git clone https://$(GITHUB_PAT)@github.com/MGDS01/docusign-test-js-sdk.git docusign-test-js-sdk
     displayName: "Clone ${{ parameters.repoUrl }} Repo"
