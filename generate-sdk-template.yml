@@ -27,7 +27,7 @@ jobs:
       # this is test email, replace with actual email
       git config user.email "mudit.garg@docusign.com"
 
-      git checkout -b sdk-update-${{ parameters.language }}-${{ format('{0:yyyyMMddHHmmss}', pipeline.startTime) }}
+      git checkout -b sdk-update-${{ parameters.language }}-$(Build.BuildId)
 
       git add .
       git commit -m "chore: regenerate ${{ parameters.language }} SDK via Speakeasy"
@@ -41,6 +41,6 @@ jobs:
       --title "Update ${{ parameters.language }} SDK" \
       --body "Automated PR with regenerated SDK" \
       --base main \
-      --head sdk-update-${{ parameters.language }}-${{ format('{0:yyyyMMddHHmmss}', pipeline.startTime) }}
+      --head sdk-update-${{ parameters.language }}-$(Build.BuildId)
     displayName: 'Create Pull Request on GitHub'
 # - publish: ./sdks/${{ parameters.language }}
