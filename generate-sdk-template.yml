@@ -12,7 +12,7 @@ jobs:
   steps:
   - template: generate-sdk-template.yml
   - template: clone-repo.yml
-      env:
+      parameters:
         repoUrl: "docuTest-${{parameters.language}}-sdk-private"
         targetDirectory: "private-sdks/docuTest-${{parameters.language}}-sdk-private"
   - script: |
