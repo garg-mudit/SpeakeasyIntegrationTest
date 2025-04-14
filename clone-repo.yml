@@ -1,0 +1,19 @@
+# File: clone-public-sdk-repo.yml
+
+parameters:
+  - name: repoUrl
+    type: string
+  - name: languageName
+    type: string
+  - name: targetDirectory
+    type: string
+
+steps:
+  - checkout: none
+
+  - script: |
+      echo "Cloning ${{ parameters.repoUrl }} into ${{ parameters.targetDirectory }}"
+      git clone ${{ parameters.repoUrl }} ${{ parameters.targetDirectory }}
+    env:
+      GITHUB_PAT: $(your_pat_variable)
+    displayName: "Clone ${{languageName}} SDK Repo"
