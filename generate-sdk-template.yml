@@ -10,7 +10,7 @@ jobs:
 - job: Generate_${{ parameters.language }}
   condition: eq('${{ parameters.generateSDK }}', 'true')
   steps:
-  - template: generate-sdk-template.yml
+  - template: install-speakeasy-cli.yml
   - template: clone-repo.yml
       parameters:
         repoUrl: "docuTest-${{parameters.language}}-sdk-private"
