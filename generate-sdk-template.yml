@@ -16,7 +16,7 @@ jobs:
       repoUrl: "docuTest-${{parameters.language}}-sdk-private"
       targetDirectory: "private-sdks/docuTest-${{parameters.language}}-sdk-private"
   - script: |
-      cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
+      cd "docusign-test-js-sdk"
       speakeasy run
     displayName: 'Generate ${{ parameters.language }} SDK'
 
