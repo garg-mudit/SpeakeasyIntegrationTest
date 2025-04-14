@@ -10,14 +10,9 @@ jobs:
 - job: Generate_${{ parameters.language }}
   condition: eq('${{ parameters.generateSDK }}', 'true')
   steps:
+  - template: generate-sdk-template.yml
   - script: |
-      # Install Speakeasy CLI
-      curl -fsSL https://go.speakeasy.com/cli-install.sh | sh
-      speakeasy -v
-    displayName: 'Install Speakeasy CLI'
-    
-  - script: |
-      speakeasy generate sdk --lang ${{ parameters.language }} --input openapi.json --output ./sdks/${{ parameters.language }}
+      speakeasy run
     displayName: 'Generate ${{ parameters.language }} SDK'
 
   - publish: ./sdks/${{ parameters.language }}
