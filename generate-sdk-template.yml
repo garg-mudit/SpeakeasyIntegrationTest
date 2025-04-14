@@ -17,12 +17,30 @@ jobs:
       targetDirectory: "private-sdks/docuTest-${{parameters.language}}-sdk-private"
   - script: |
       cd "docusign-test-js-sdk"
-      echo $(SPEAKEASY_API_KEY)
       speakeasy run
     displayName: 'Generate ${{ parameters.language }} SDK'
 
-  - publish: ./docusign-test-js-sdk
-    artifact: ${{ parameters.language }}-sdk
-    displayName: 'Publish ${{ parameters.language }} SDK as artifact'
+  - script: |
+      cd sdk-repo
 
- # - publish: ./sdks/${{ parameters.language }}
+      git config user.name "automation-bot"
+      # this is test email, replace with actual email
+      git config user.email "mudit.garg@docusign.com"
+
+      git checkout -b sdk-update-${{ parameters.language }}-${{ format('{0:yyyyMMddHHmmss}', pipeline.startTime) }}
+
+      git add .
+      git commit -m "chore: regenerate ${{ parameters.language }} SDK via Speakeasy"
+      git push origin HEAD
+    displayName: 'Commit and Push SDK Changes'
+
+  - script: |
+      cd docusign-test-js-sdk
+      echo "$(GITHUB_PAT)" | gh auth login --with-token
+      gh pr create \
+      --title "Update ${{ parameters.language }} SDK" \
+      --body "Automated PR with regenerated SDK" \
+      --base main \
+      --head sdk-update-${{ parameters.language }}-${{ format('{0:yyyyMMddHHmmss}', pipeline.startTime) }}
+    displayName: 'Create Pull Request on GitHub'
+# - publish: ./sdks/${{ parameters.language }}
