@@ -21,7 +21,7 @@ jobs:
     displayName: 'Generate ${{ parameters.language }} SDK'
 
   - script: |
-      cd sdk-repo
+      cd docusign-test-js-sdk
 
       git config user.name "automation-bot"
       # this is test email, replace with actual email
