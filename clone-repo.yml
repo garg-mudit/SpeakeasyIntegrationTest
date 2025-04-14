@@ -1,4 +1,4 @@
-# File: clone-public-sdk-repo.yml
+# File: clone-repo.yml
 
 parameters:
   - name: repoUrl
@@ -11,6 +11,8 @@ steps:
 
   - script: |
       echo "Cloning ${{ parameters.repoUrl }} into ${{ parameters.targetDirectory }}"
-#      git clone https://$(GITHUB_PAT)@${{ parameters.repoUrl }} ${{ parameters.targetDirectory }}
       git clone https://$(GITHUB_PAT)@github.com/MGDS01/docusign-test-js-sdk.git docusign-test-js-sdk
     displayName: "Clone ${{ parameters.repoUrl }} Repo"
+
+
+#   git clone https://$(GITHUB_PAT)@${{ parameters.repoUrl }} ${{ parameters.targetDirectory }}
