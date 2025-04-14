@@ -13,5 +13,5 @@ steps:
       echo "Cloning ${{ parameters.repoUrl }} into ${{ parameters.targetDirectory }}"
       git clone https://$(GITHUB_PAT)@${{ parameters.repoUrl }} ${{ parameters.targetDirectory }}
     env:
-      GITHUB_PAT: $(your_pat_variable)
+      GITHUB_PAT: $(GITHUB_PAT)
     displayName: "Clone ${{ parameters.repoUrl }} Repo"
