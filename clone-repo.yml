@@ -3,8 +3,6 @@
 parameters:
   - name: repoUrl
     type: string
-  - name: languageName
-    type: string
   - name: targetDirectory
     type: string
 
@@ -16,4 +14,4 @@ steps:
       git clone ${{ parameters.repoUrl }} ${{ parameters.targetDirectory }}
     env:
       GITHUB_PAT: $(your_pat_variable)
-    displayName: "Clone ${{languageName}} SDK Repo"
+    displayName: "Clone ${{ parameters.repoUrl }} Repo"
