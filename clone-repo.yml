@@ -7,8 +7,6 @@ parameters:
     type: string
 
 steps:
-  - checkout: none
-
   - script: |
       echo "Cloning ${{ parameters.repoUrl }} into ${{ parameters.targetDirectory }}"
       git clone --progress --verbose https://$(GITHUB_PAT)@github.com/MGDS01/docusign-test-js-sdk.git docusign-test-js-sdk
