@@ -11,6 +11,11 @@ jobs:
   condition: eq('${{ parameters.generateSDK }}', 'true')
   steps:
   - template: generate-sdk-template.yml
+  - template: clone-repo.yml
+    env:
+      languageName: $(language)
+      repoUrl: "docuTest-${{}}-sdk-private"
+      targetDirectory: "private-sdks/docuTest-${{}}-sdk-private"
   - script: |
       speakeasy run
     displayName: 'Generate ${{ parameters.language }} SDK'
