@@ -17,6 +17,7 @@ jobs:
       targetDirectory: "private-sdks/docuTest-${{parameters.language}}-sdk-private"
   - script: |
       cd "docusign-test-js-sdk"
+      echo $(SPEAKEASY_API_KEY)
       speakeasy run
     displayName: 'Generate ${{ parameters.language }} SDK'
 
