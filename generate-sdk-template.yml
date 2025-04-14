@@ -13,8 +13,8 @@ jobs:
   - template: generate-sdk-template.yml
   - template: clone-repo.yml
       env:
-      repoUrl: "docuTest-${{parameters.language}}-sdk-private"
-      targetDirectory: "private-sdks/docuTest-${{parameters.language}}-sdk-private"
+        repoUrl: "docuTest-${{parameters.language}}-sdk-private"
+        targetDirectory: "private-sdks/docuTest-${{parameters.language}}-sdk-private"
   - script: |
       speakeasy run
     displayName: 'Generate ${{ parameters.language }} SDK'
