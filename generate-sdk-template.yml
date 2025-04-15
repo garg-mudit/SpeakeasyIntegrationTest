@@ -62,6 +62,11 @@ jobs:
 
       echo "Created PR #$pr_number"
       echo "URL: $pr_url"
+      # ✅ Set as regular variables (for use within same job)
+      echo "##vso[task.setvariable variable=privateRepoPrNumber]$pr_number"
+      echo "##vso[task.setvariable variable=privateRepoPrUrl]$pr_url"
+
+      # ✅ Set as output variables (for use across jobs)
       echo "##vso[task.setvariable variable=privateRepoPrNumber;isOutput=true]$pr_number"
       echo "##vso[task.setvariable variable=privateRepoPrUrl;isOutput=true]$pr_url"
     displayName: 'Create Pull Request on GitHub'
@@ -71,4 +76,32 @@ jobs:
       echo "PR URL: $privateRepoPrUrl"      
 
     displayName: 'Echo PR Number and URL'
+
+  - script: |
+      pr_number=$privateRepoPrNumber
+      repo="MGDS01/docusign-test-js-sdk"  # TODO: Replace with your actual repository
+
+      echo "Monitoring PR #$pr_number for merge status..."
+
+      while true; do
+        # Retrieve PR details
+        pr_details=$(gh pr view "$pr_number" --repo "$repo")
+
+        # Extract the status line
+        status_line=$(echo "$pr_details" | grep -i 'Status:')
+
+        # Determine the status
+        if echo "$status_line" | grep -iq 'Merged'; then
+          echo "✅ PR #$pr_number has been merged!"
+          break
+        elif echo "$status_line" | grep -iq 'Closed'; then
+          echo "❌ PR #$pr_number was closed without merging."
+          exit 1
+        else
+          echo "⏳ PR #$pr_number is still open. Checking again in 30 seconds..."
+          sleep 30
+        fi
+      done
+
+    displayName: 'Wait for PR to be merged and then do something'
 # - publish: ./sdks/${{ parameters.language }}
