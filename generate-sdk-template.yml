@@ -62,23 +62,15 @@ jobs:
 
       echo "Created PR #$pr_number"
       echo "URL: $pr_url"
-      # ✅ Set as regular variables (for use within same job)
-      echo "##vso[task.setvariable variable=privateRepoPrNumber]$pr_number"
-      echo "##vso[task.setvariable variable=privateRepoPrUrl]$pr_url"
+      # # ✅ Set as regular variables (for use within same job)
+      # echo "##vso[task.setvariable variable=privateRepoPrNumber]$pr_number"
+      # echo "##vso[task.setvariable variable=privateRepoPrUrl]$pr_url"
 
-      # ✅ Set as output variables (for use across jobs)
-      echo "##vso[task.setvariable variable=privateRepoPrNumber;isOutput=true]$pr_number"
-      echo "##vso[task.setvariable variable=privateRepoPrUrl;isOutput=true]$pr_url"
-    displayName: 'Create Pull Request on GitHub'
+      # # ✅ Set as output variables (for use across jobs)
+      # echo "##vso[task.setvariable variable=privateRepoPrNumber;isOutput=true]$pr_number"
+      # echo "##vso[task.setvariable variable=privateRepoPrUrl;isOutput=true]$pr_url"
 
-  - script: |
-      echo "Got PR #$privateRepoPrNumber"
-      echo "PR URL: $privateRepoPrUrl"      
-
-    displayName: 'Echo PR Number and URL'
-
-  - script: |
-      pr_number=$privateRepoPrNumber
+      # pr_number=$privateRepoPrNumber
       repo="MGDS01/docusign-test-js-sdk"  # TODO: Replace with your actual repository
 
       echo "Monitoring PR #$pr_number for merge status..."
@@ -102,6 +94,7 @@ jobs:
           sleep 30
         fi
       done
+    displayName: 'Create Pull Request on GitHub'
 
-    displayName: 'Wait for PR to be merged and then do something'
+    # displayName: 'Wait for PR to be merged and then do something'
 # - publish: ./sdks/${{ parameters.language }}
