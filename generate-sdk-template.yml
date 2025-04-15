@@ -50,7 +50,7 @@ jobs:
       --title "Update ${{ parameters.language }} SDK" \
       --body "Automated PR with regenerated SDK" \
       --base main \
-      --head sdk-update-${{ parameters.language }}-$(Build.BuildId)
+      --head sdk-update-${{ parameters.language }}-$(Build.BuildId) \
       --json number,url)
 
       pr_number=$(echo "$pr_info" | jq -r '.number')
