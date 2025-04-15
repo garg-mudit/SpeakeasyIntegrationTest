@@ -19,8 +19,9 @@ jobs:
     parameters:
       # TODO: Replace with the actual private orgName and repoName.
       orgName: "MGDS01"
-      repoName: "docuTest-${{parameters.language}}-sdk-private"
       # TODO: Replace targetDirectory with the actual private repoName.
+      repoName: "docusign-test-js-sdk"
+      # repoName: "docuTest-${{parameters.language}}-sdk-private"
       targetDirectory: "private-sdks/docuTest-${{parameters.language}}-sdk-private"
   - script: |
       # TODO: Replace targetDirectory with the actual private repoName.
