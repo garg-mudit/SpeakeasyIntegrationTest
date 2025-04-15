@@ -67,8 +67,8 @@ jobs:
     displayName: 'Create Pull Request on GitHub'
 
   - script: |
-      echo "Got PR #$(privateRepoPrNumber)"
-      echo "PR URL: $(privateRepoPrUrl)"
+      echo "Got PR #$privateRepoPrNumber"
+      echo "PR URL: $privateRepoPrUrl"      
 
     displayName: 'Echo PR Number and URL'
 # - publish: ./sdks/${{ parameters.language }}
