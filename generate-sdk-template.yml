@@ -46,15 +46,19 @@ jobs:
   - script: |
       cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
       echo "$(GITHUB_PAT)" | gh auth login --with-token
+      gh --version
+
       pr_info=$(gh pr create \
       --title "Update ${{ parameters.language }} SDK" \
       --body "Automated PR with regenerated SDK" \
       --base main \
-      --head sdk-update-${{ parameters.language }}-$(Build.BuildId) \
-      --json number,url)
+      --head sdk-update-${{ parameters.language }}-$(Build.BuildId))
 
-      pr_number=$(echo "$pr_info" | jq -r '.number')
-      pr_url=$(echo "$pr_info" | jq -r '.url')
+      # pr_number=$(echo "$pr_info" | jq -r '.number')
+      # pr_url=$(echo "$pr_info" | jq -r '.url')
+
+      pr_url=$(echo "$pr_info" | grep -o 'https://github.com[^ ]*')
+      pr_number=$(echo "$pr_url" | grep -o '[0-9]*$')
 
       echo "Created PR #$pr_number"
       echo "URL: $pr_url"
