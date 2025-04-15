@@ -3,5 +3,10 @@ steps:
 - script: |
     # Install Speakeasy CLI
     curl -fsSL https://go.speakeasy.com/cli-install.sh | sh
+
+    # Print version info
+    echo ""
+    echo "Speakeasy version"
+    echo "---------------------------"
     speakeasy -v
   displayName: 'Install Speakeasy CLI'

@@ -1,16 +1,16 @@
 # File: clone-repo.yml
 
 parameters:
-  - name: repoUrl
+  - name: orgName
+    type: string
+  - name: repoName
     type: string
   - name: targetDirectory
     type: string
 
 steps:
   - script: |
-      echo "Cloning ${{ parameters.repoUrl }} into ${{ parameters.targetDirectory }}"
-      git clone --progress --verbose https://$(GITHUB_PAT)@github.com/MGDS01/docusign-test-js-sdk.git docusign-test-js-sdk
-    displayName: "Clone ${{ parameters.repoUrl }} Repo"
+      echo "Cloning github.com/${{ parameters.orgName }}/${{ parameters.repoName }} into ${{ parameters.targetDirectory }}"
 
-
-#   git clone https://$(GITHUB_PAT)@${{ parameters.repoUrl }} ${{ parameters.targetDirectory }}
+      git clone --progress --verbose https://$(GITHUB_PAT)@github.com/${{ parameters.orgName }}/${{ parameters.repoName }}.git {{ parameters.targetDirectory }}
+    displayName: "Clone ${{ parameters.orgName }}/${{ parameters.repoName }} Repo"

@@ -10,26 +10,26 @@ parameters:
   displayName: 'Generate C# SDK'
   type: boolean
   default: false
-- name: generateJava
-  displayName: 'Generate Java SDK'
-  type: boolean
-  default: false
-- name: generatePython
-  displayName: 'Generate Python SDK'
-  type: boolean
-  default: false
 - name: generateTypeScript
   displayName: 'Generate TypeScript SDK'
   type: boolean
   default: false
-- name: generatePHP
-  displayName: 'Generate PHP SDK'
-  type: boolean
-  default: false
-- name: generateRuby
-  displayName: 'Generate Ruby SDK'
-  type: boolean
-  default: false
+# - name: generateJava
+#   displayName: 'Generate Java SDK'
+#   type: boolean
+#   default: false
+# - name: generatePython
+#   displayName: 'Generate Python SDK'
+#   type: boolean
+#   default: false
+# - name: generatePHP
+#   displayName: 'Generate PHP SDK'
+#   type: boolean
+#   default: false
+# - name: generateRuby
+#   displayName: 'Generate Ruby SDK'
+#   type: boolean
+#   default: false
 
 
 pool:
@@ -44,21 +44,21 @@ stages:
       generateSDK: ${{ parameters.generateCSharp }}
   - template: generate-sdk-template.yml
     parameters:
-      language: 'java'
-      generateSDK: ${{ parameters.generateJava }}
-  - template: generate-sdk-template.yml
-    parameters:
-      language: 'php'
-      generateSDK: ${{ parameters.generatePHP }}
-  - template: generate-sdk-template.yml
-    parameters:
-      language: 'ruby'
-      generateSDK: ${{ parameters.generateRuby }}
-  - template: generate-sdk-template.yml
-    parameters:
-      language: 'python'
-      generateSDK: ${{ parameters.generatePython }}
-  - template: generate-sdk-template.yml
-    parameters:
       language: 'typescript'
       generateSDK: ${{ parameters.generateTypeScript }}
+  # - template: generate-sdk-template.yml
+  #   parameters:
+  #     language: 'java'
+  #     generateSDK: ${{ parameters.generateJava }}
+  # - template: generate-sdk-template.yml
+  #   parameters:
+  #     language: 'php'
+  #     generateSDK: ${{ parameters.generatePHP }}
+  # - template: generate-sdk-template.yml
+  #   parameters:
+  #     language: 'ruby'
+  #     generateSDK: ${{ parameters.generateRuby }}
+  # - template: generate-sdk-template.yml
+  #   parameters:
+  #     language: 'python'
+  #     generateSDK: ${{ parameters.generatePython }}

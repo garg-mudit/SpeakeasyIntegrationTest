@@ -10,21 +10,29 @@ jobs:
 - job: Generate_${{ parameters.language }}
   condition: eq('${{ parameters.generateSDK }}', 'true')
   steps:
+
   - template: install-speakeasy-cli.yml
+
   - template: clone-repo.yml
+    # This assumes for now that the private repo is already created.
+    # TODO: Create a new repo if it doesn't exist based on the language and this should go though an approval process.
     parameters:
-      repoUrl: "docuTest-${{parameters.language}}-sdk-private"
+      # TODO: Replace with the actual private orgName and repoName.
+      orgName: "MGDS01"
+      repoName: "docuTest-${{parameters.language}}-sdk-private"
+      # TODO: Replace targetDirectory with the actual private repoName.
       targetDirectory: "private-sdks/docuTest-${{parameters.language}}-sdk-private"
   - script: |
-      cd "docusign-test-js-sdk"
+      # TODO: Replace targetDirectory with the actual private repoName.
+      cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
       speakeasy run
     displayName: 'Generate ${{ parameters.language }} SDK'
 
   - script: |
-      cd docusign-test-js-sdk
+      cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
 
       git config user.name "automation-bot"
-      # this is test email, replace with actual email
+      # TODO: Replace with correct email.
       git config user.email "mudit.garg@docusign.com"
 
       git checkout -b sdk-update-${{ parameters.language }}-$(Build.BuildId)
@@ -35,12 +43,27 @@ jobs:
     displayName: 'Commit and Push SDK Changes'
 
   - script: |
-      cd docusign-test-js-sdk
+      cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
       echo "$(GITHUB_PAT)" | gh auth login --with-token
-      gh pr create \
+      pr_info=$(gh pr create \
       --title "Update ${{ parameters.language }} SDK" \
       --body "Automated PR with regenerated SDK" \
       --base main \
       --head sdk-update-${{ parameters.language }}-$(Build.BuildId)
+      --json number,url)
+
+      pr_number=$(echo "$pr_info" | jq -r '.number')
+      pr_url=$(echo "$pr_info" | jq -r '.url')
+
+      echo "Created PR #$pr_number"
+      echo "URL: $pr_url"
+      echo "##vso[task.setvariable variable=privateRepoPrNumber;isOutput=true]$pr_number"
+      echo "##vso[task.setvariable variable=privateRepoPrUrl;isOutput=true]$pr_url"
     displayName: 'Create Pull Request on GitHub'
+
+  - script: |
+      echo "Got PR #$(privateRepoPrNumber)"
+      echo "PR URL: $(privateRepoPrUrl)"
+
+    displayName: 'Echo PR Number and URL'
 # - publish: ./sdks/${{ parameters.language }}
