@@ -12,5 +12,5 @@ steps:
   - script: |
       echo "Cloning github.com/${{ parameters.orgName }}/${{ parameters.repoName }} into ${{ parameters.targetDirectory }}"
       echo "git clone --progress --verbose \"https://$(GITHUB_PAT)@github.com/${{ parameters.orgName }}/${{ parameters.repoName }}.git\" \"${{ parameters.targetDirectory }}\""
-      git clone --progress --verbose "https://$(GITHUB_PAT)@github.com/${{ parameters.orgName }}/${{ parameters.repoName }}.git" "{{ parameters.targetDirectory }}"
+      git clone --progress --verbose "https://$(GITHUB_PAT)@github.com/${{ parameters.orgName }}/${{ parameters.repoName }}.git" "${{ parameters.targetDirectory }}"
     displayName: "Clone ${{ parameters.orgName }}/${{ parameters.repoName }} Repo"
