@@ -95,14 +95,25 @@ jobs:
 
         # Retrieve PR details
         pr_details=$(gh pr view "$pr_number" --repo "$repo")
+        echo "PR Details: $pr_details"
 
         # Extract the status line
         status_line=$(echo "$pr_details" | grep -i 'Status:')
+        echo "Status Line: $status_line"
+
+        # Retrieve PR status in JSON format
+        pr_status=$(gh pr view "$pr_number" --repo "$repo" --json state,mergedAt --jq '.state + " " + (.mergedAt // "")')
+        echo "PR Status: $pr_status"
+
+        # Parse the status and mergedAt fields
+        read state merged_at <<< "$pr_status"
+        echo "State: $state"
+        echo "Merged At: $merged_at"
 
         # Determine the status
         if echo "$status_line" | grep -iq 'Merged'; then
           echo "✅ PR #$pr_number has been merged!"
-          break
+          exit 0
         elif echo "$status_line" | grep -iq 'Closed'; then
           echo "❌ PR #$pr_number was closed without merging."
           exit 1
