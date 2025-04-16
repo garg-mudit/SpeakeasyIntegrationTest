@@ -75,7 +75,24 @@ jobs:
 
       echo "Monitoring PR #$pr_number for merge status..."
 
+      # Set the timeout duration (in seconds) and the interval between checks
+      timeout_seconds=300  # 5 minutes
+      interval=30  # 30 seconds
+
+      # Capture the start time
+      start_time=$SECONDS
+
       while true; do
+
+        # Calculate elapsed time
+        elapsed=$((SECONDS - start_time))
+
+        # Check if timeout has been reached
+        if [ "$elapsed" -ge "$timeout_seconds" ]; then
+          echo "⏰ Timeout reached after $elapsed seconds. PR #$pr_number was not merged within the expected time."
+          exit 1
+        fi
+
         # Retrieve PR details
         pr_details=$(gh pr view "$pr_number" --repo "$repo")
 
