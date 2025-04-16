@@ -24,12 +24,32 @@ jobs:
       # repoName: "docuTest-${{parameters.language}}-sdk-private"
       targetDirectory: "private-sdks/docuTest-${{parameters.language}}-sdk-private"
   - script: |
+
+      # Exit the script immediately if any command fails (non-zero exit code).
+      # This prevents the script from continuing in a broken state.
+      set -e
+
+      # Set up a trap to catch termination signals (SIGINT from Ctrl+C or SIGTERM from pipeline cancel).
+      # When caught, print a message and exit with status 1.
+      # This ensures the script exits gracefully instead of silently failing or hanging.
+      trap "echo '🛑 Cancelled or interrupted. Exiting...'; exit 1" SIGINT SIGTERM
+
       # TODO: Replace targetDirectory with the actual private repoName.
       cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
       speakeasy run
     displayName: 'Generate ${{ parameters.language }} SDK'
 
   - script: |
+
+      # Exit the script immediately if any command fails (non-zero exit code).
+      # This prevents the script from continuing in a broken state.
+      set -e
+
+      # Set up a trap to catch termination signals (SIGINT from Ctrl+C or SIGTERM from pipeline cancel).
+      # When caught, print a message and exit with status 1.
+      # This ensures the script exits gracefully instead of silently failing or hanging.
+      trap "echo '🛑 Cancelled or interrupted. Exiting...'; exit 1" SIGINT SIGTERM
+
       cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
 
       git config user.name "automation-bot"
@@ -44,6 +64,16 @@ jobs:
     displayName: 'Commit and Push SDK Changes'
 
   - script: |
+
+      # Exit the script immediately if any command fails (non-zero exit code).
+      # This prevents the script from continuing in a broken state.
+      set -e
+
+      # Set up a trap to catch termination signals (SIGINT from Ctrl+C or SIGTERM from pipeline cancel).
+      # When caught, print a message and exit with status 1.
+      # This ensures the script exits gracefully instead of silently failing or hanging.
+      trap "echo '🛑 Cancelled or interrupted. Exiting...'; exit 1" SIGINT SIGTERM
+
       cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
       echo "$(GITHUB_PAT)" | gh auth login --with-token
       gh --version
@@ -128,8 +158,14 @@ jobs:
 
   - script: |
 
+      # Exit the script immediately if any command fails (non-zero exit code).
+      # This prevents the script from continuing in a broken state.
       set -e
 
+      # Set up a trap to catch termination signals (SIGINT from Ctrl+C or SIGTERM from pipeline cancel).
+      # When caught, print a message and exit with status 1.
+      # This ensures the script exits gracefully instead of silently failing or hanging.
+      trap "echo '🛑 Cancelled or interrupted. Exiting...'; exit 1" SIGINT SIGTERM
 
       cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
       git config user.name "automation-bot"
@@ -167,6 +203,16 @@ jobs:
     displayName: 'Push SDK Changes to Public Repo'
 
   - script: |
+
+      # Exit the script immediately if any command fails (non-zero exit code).
+      # This prevents the script from continuing in a broken state.
+      set -e
+
+      # Set up a trap to catch termination signals (SIGINT from Ctrl+C or SIGTERM from pipeline cancel).
+      # When caught, print a message and exit with status 1.
+      # This ensures the script exits gracefully instead of silently failing or hanging.
+      trap "echo '🛑 Cancelled or interrupted. Exiting...'; exit 1" SIGINT SIGTERM
+
       cd "public-sdks/docuTest-${{parameters.language}}-sdk"
       echo "$(GITHUB_PAT)" | gh auth login --with-token
       git config user.name "automation-bot"
