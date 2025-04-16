@@ -134,9 +134,8 @@ jobs:
       cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
       git fetch origin
       git checkout -B main "origin/main"
-      cd "../"
 
-      cd "public-sdks/docuTest-${{parameters.language}}-sdk"
+      cd "../../public-sdks/docuTest-${{parameters.language}}-sdk"
       git fetch origin
       git checkout -b "sdk-update-${{ parameters.language }}-$(Build.BuildId)" "origin/main"
 
@@ -144,11 +143,13 @@ jobs:
       find . -mindepth 1 -maxdepth 1 ! -name '.git' ! -name '.gitignore' -exec rm -rf {} +
 
       # === COPY FILES FROM PRIVATE REPO ===
+      # 🔥 Prevents overwriting public .gitignore and .git
+      # 🔥 Honors ignore patterns during copy
       rsync -av --progress \
       --exclude='.git' \
-      --exclude='.gitignore' \  # 🔥 Prevents overwriting public .gitignore
-      --exclude-from=.gitignore \ # 🔥 Honors ignore patterns during copy
-      ../../private-sdks/docuTest-${language}-sdk-private/ ./
+      --exclude='.gitignore' \  
+      --exclude-from=.gitignore \ 
+      ../../private-sdks/docuTest-${{parameters.language}}-sdk-private/ ./
 
 
       git add -A
@@ -158,7 +159,7 @@ jobs:
     displayName: 'Push SDK Changes to Public Repo'
 
   - script: |
-      cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
+      cd "public-sdks/docuTest-${{parameters.language}}-sdk"
       echo "$(GITHUB_PAT)" | gh auth login --with-token
       git config user.name "automation-bot"
       # TODO: Replace with correct email.
