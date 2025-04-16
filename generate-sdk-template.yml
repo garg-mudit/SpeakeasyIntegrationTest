@@ -113,7 +113,113 @@ jobs:
           sleep 30
         fi
       done
-    displayName: 'Create Pull Request on GitHub'
+    displayName: 'Create Private Repo Pull Request and wait for MERGE on GitHub'
+
+  - template: clone-repo.yml
+    # This assumes for now that the public repo is already created.
+    # TODO: Create a new repo if it doesn't exist based on the language and this should go though an approval process.
+    parameters:
+      # TODO: Replace with the actual public orgName and repoName.
+      orgName: "MGDS01"
+      # TODO: Replace targetDirectory with the actual private repoName.
+      repoName: "docusign-test-js-sdk-public"
+      # repoName: "docuTest-${{parameters.language}}-sdk-private"
+      targetDirectory: "public-sdks/docuTest-${{parameters.language}}-sdk"
+
+  - script: |
+      git config user.name "automation-bot"
+      # TODO: Replace with correct email.
+      git config user.email "mudit.garg@docusign.com"
+
+      cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
+      git fetch origin
+      git checkout -B main "origin/main"
+      cd "../"
+
+      cd "public-sdks/docuTest-${{parameters.language}}-sdk"
+      git fetch origin
+      git checkout -b "sdk-update-${{ parameters.language }}-$(Build.BuildId)" "origin/main"
+
+      # === CLEAN PUBLIC REPO (KEEP .git and .gitignore) ===
+      find . -mindepth 1 -maxdepth 1 ! -name '.git' ! -name '.gitignore' -exec rm -rf {} +
+
+      # === COPY FILES FROM PRIVATE REPO ===
+      rsync -av --progress \
+      --exclude='.git' \
+      --exclude='.gitignore' \  # 🔥 Prevents overwriting public .gitignore
+      --exclude-from=.gitignore \ # 🔥 Honors ignore patterns during copy
+      ../../private-sdks/docuTest-${language}-sdk-private/ ./
+
+
+      git add -A
+      git commit -m "chore: regenerate ${{ parameters.language }} SDK via Speakeasy"
+      git push origin HEAD
+
+    displayName: 'Push SDK Changes to Public Repo'
+
+  - script: |
+      cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
+      echo "$(GITHUB_PAT)" | gh auth login --with-token
+      git config user.name "automation-bot"
+      # TODO: Replace with correct email.
+      git config user.email "mudit.garg@docusign.com"
+
+      pr_info=$(gh pr create \
+      --title "Update ${{ parameters.language }} SDK" \
+      --body "Automated PR with regenerated SDK" \
+      --base main \
+      --head sdk-update-${{ parameters.language }}-$(Build.BuildId))
+
+      pr_url=$(echo "$pr_info" | grep -o 'https://github.com[^ ]*')
+      pr_number=$(echo "$pr_url" | grep -o '[0-9]*$')
+
+      echo "Created PR #$pr_number"
+      echo "URL: $pr_url"      
+ 
+      repo="MGDS01/docusign-test-js-sdk-public"  # TODO: Replace with your actual repository
+
+      echo "Monitoring PR #$pr_number for merge status..."
+
+      # Set the timeout duration (in seconds) and the interval between checks
+      timeout_seconds=300  # 5 minutes
+      interval=30  # 30 seconds
+
+      # Capture the start time
+      start_time=$SECONDS
+
+      while true; do
+
+        # Calculate elapsed time
+        elapsed=$((SECONDS - start_time))
+
+        # Check if timeout has been reached
+        if [ "$elapsed" -ge "$timeout_seconds" ]; then
+          echo "⏰ Timeout reached after $elapsed seconds. PR #$pr_number was not merged within the expected time."
+          exit 1
+        fi
+
+        # Retrieve PR status in JSON format
+        pr_status=$(gh pr view "$pr_number" --repo "$repo" --json state,mergedAt --jq '.state + " " + (.mergedAt // "")')
+        echo "PR Status: $pr_status"
+
+        # Parse the status and mergedAt fields
+        read state merged_at <<< "$pr_status"
+        echo "State: $state"
+        echo "Merged At: $merged_at"
+
+        if [[ "$state" == "MERGED" || -n "$merged_at" ]]; then
+          echo "✅ PR #$pr_number has been merged!"
+          exit 0
+        elif [[ "$state" == "CLOSED" ]]; then
+          echo "❌ PR #$pr_number was closed without merging."
+          exit 1
+        else
+          echo "⏳ PR #$pr_number is still open. Checking again in 30 seconds..."
+          sleep 30
+        fi
+      done      
+    displayName: 'Create Public Repo Pull Request and wait for MERGE on GitHub'    
+
 
     # displayName: 'Wait for PR to be merged and then do something'
 # - publish: ./sdks/${{ parameters.language }}
