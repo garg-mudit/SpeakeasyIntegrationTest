@@ -130,15 +130,20 @@ jobs:
 
       set -e
 
+
+      cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
       git config user.name "automation-bot"
       # TODO: Replace with correct email.
       git config user.email "mudit.garg@docusign.com"
 
-      cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
       git fetch origin
       git checkout -B main "origin/main"
 
       cd "../../public-sdks/docuTest-${{parameters.language}}-sdk"
+      git config user.name "automation-bot"
+      # TODO: Replace with correct email.
+      git config user.email "mudit.garg@docusign.com"
+
       git fetch origin
       git checkout -b "sdk-update-${{ parameters.language }}-$(Build.BuildId)" "origin/main"
 
