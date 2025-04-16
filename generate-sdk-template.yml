@@ -127,6 +127,9 @@ jobs:
       targetDirectory: "public-sdks/docuTest-${{parameters.language}}-sdk"
 
   - script: |
+
+      set -e
+
       git config user.name "automation-bot"
       # TODO: Replace with correct email.
       git config user.email "mudit.garg@docusign.com"
@@ -147,8 +150,8 @@ jobs:
       # 🔥 Honors ignore patterns during copy
       rsync -av --progress \
       --exclude='.git' \
-      --exclude='.gitignore' \  
-      --exclude-from=.gitignore \ 
+      --exclude='.gitignore' \
+      --exclude-from=.gitignore \
       ../../private-sdks/docuTest-${{parameters.language}}-sdk-private/ ./
 
 
