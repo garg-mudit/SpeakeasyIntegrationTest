@@ -1,0 +1,2 @@
+# Don't include these files in zip/tar exports
+.ado/** export-ignore

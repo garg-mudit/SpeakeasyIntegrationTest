@@ -25,7 +25,7 @@ jobs:
 
   - script: |
 
-      source .ado/setup-signal-handling.sh
+      source .ado/scripts/setup-signal-handling.sh
 
       # TODO: Replace targetDirectory with the actual private repoName.
       cd "private-sdks/docusign-test-${{parameters.language}}-sdk-private"
@@ -34,7 +34,7 @@ jobs:
 
   - script: |
 
-      source .ado/setup-signal-handling.sh
+      source .ado/scripts/setup-signal-handling.sh
 
       # TODO: Replace targetDirectory with the actual private repoName.
       cd "private-sdks/docusign-test-${{parameters.language}}-sdk-private"
@@ -52,7 +52,7 @@ jobs:
 
   - script: |
 
-      source .ado/setup-signal-handling.sh
+      source .ado/scripts/setup-signal-handling.sh
 
       cd "private-sdks/docusign-test-${{parameters.language}}-sdk-private"
       echo "$(GITHUB_PAT)" | gh auth login --with-token
@@ -126,7 +126,7 @@ jobs:
 
   - script: |
 
-      source .ado/setup-signal-handling.sh
+      source .ado/scripts/setup-signal-handling.sh
 
       cd "private-sdks/docusign-test-${{parameters.language}}-sdk-private"
       git config user.name "automation-bot"
@@ -165,7 +165,7 @@ jobs:
 
   - script: |
 
-      source .ado/setup-signal-handling.sh
+      source .ado/scripts/setup-signal-handling.sh
 
       cd "public-sdks/docusign-test-${{parameters.language}}-sdk"
       echo "$(GITHUB_PAT)" | gh auth login --with-token

@@ -11,7 +11,7 @@ parameters:
 steps:
   - script: |
 
-      source .ado/setup-signal-handling.sh
+      source .ado/scripts/setup-signal-handling.sh
 
       echo "Cloning github.com/${{ parameters.orgName }}/${{ parameters.repoName }} into ${{ parameters.targetDirectory }}"
       echo "git clone --progress --verbose \"https://$(GITHUB_PAT)@github.com/${{ parameters.orgName }}/${{ parameters.repoName }}.git\" \"${{ parameters.targetDirectory }}\""

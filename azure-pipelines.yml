@@ -38,27 +38,27 @@ pool:
 stages:
 - stage: GenerateSDKs
   jobs:
-  - template: generate-sdk-template.yml
+  - template: .ado/templates/generate-sdk-template.yml
     parameters:
       language: 'csharp'
       generateSDK: ${{ parameters.generateCSharp }}
-  - template: generate-sdk-template.yml
+  - template: .ado/templates/generate-sdk-template.yml
     parameters:
       language: 'typescript'
       generateSDK: ${{ parameters.generateTypeScript }}
-  - template: generate-sdk-template.yml
+  - template: .ado/templates/generate-sdk-template.yml
     parameters:
       language: 'java'
       generateSDK: ${{ parameters.generateJava }}
-  # - template: generate-sdk-template.yml
+  # - template: .ado/templates/generate-sdk-template.yml
   #   parameters:
   #     language: 'php'
   #     generateSDK: ${{ parameters.generatePHP }}
-  # - template: generate-sdk-template.yml
+  # - template: .ado/templates/generate-sdk-template.yml
   #   parameters:
   #     language: 'ruby'
   #     generateSDK: ${{ parameters.generateRuby }}
-  # - template: generate-sdk-template.yml
+  # - template: .ado/templates/generate-sdk-template.yml
   #   parameters:
   #     language: 'python'
   #     generateSDK: ${{ parameters.generatePython }}
