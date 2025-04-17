@@ -20,37 +20,24 @@ jobs:
       # TODO: Replace with the actual private orgName and repoName.
       orgName: "MGDS01"
       # TODO: Replace targetDirectory with the actual private repoName.
-      repoName: "docusign-test-js-sdk"
-      # repoName: "docuTest-${{parameters.language}}-sdk-private"
-      targetDirectory: "private-sdks/docuTest-${{parameters.language}}-sdk-private"
+      repoName: "docusign-test-${{parameters.language}}-sdk-private"
+      targetDirectory: "private-sdks/docusign-test-${{parameters.language}}-sdk-private"
+
   - script: |
 
-      # Exit the script immediately if any command fails (non-zero exit code).
-      # This prevents the script from continuing in a broken state.
-      set -e
-
-      # Set up a trap to catch termination signals (SIGINT from Ctrl+C or SIGTERM from pipeline cancel).
-      # When caught, print a message and exit with status 1.
-      # This ensures the script exits gracefully instead of silently failing or hanging.
-      trap "echo '🛑 Cancelled or interrupted. Exiting...'; exit 1" SIGINT SIGTERM
+      source .ado/setup-signal-handling.sh
 
       # TODO: Replace targetDirectory with the actual private repoName.
-      cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
+      cd "private-sdks/docusign-test-${{parameters.language}}-sdk-private"
       speakeasy run
     displayName: 'Generate ${{ parameters.language }} SDK'
 
   - script: |
 
-      # Exit the script immediately if any command fails (non-zero exit code).
-      # This prevents the script from continuing in a broken state.
-      set -e
+      source .ado/setup-signal-handling.sh
 
-      # Set up a trap to catch termination signals (SIGINT from Ctrl+C or SIGTERM from pipeline cancel).
-      # When caught, print a message and exit with status 1.
-      # This ensures the script exits gracefully instead of silently failing or hanging.
-      trap "echo '🛑 Cancelled or interrupted. Exiting...'; exit 1" SIGINT SIGTERM
-
-      cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
+      # TODO: Replace targetDirectory with the actual private repoName.
+      cd "private-sdks/docusign-test-${{parameters.language}}-sdk-private"
 
       git config user.name "automation-bot"
       # TODO: Replace with correct email.
@@ -65,16 +52,9 @@ jobs:
 
   - script: |
 
-      # Exit the script immediately if any command fails (non-zero exit code).
-      # This prevents the script from continuing in a broken state.
-      set -e
+      source .ado/setup-signal-handling.sh
 
-      # Set up a trap to catch termination signals (SIGINT from Ctrl+C or SIGTERM from pipeline cancel).
-      # When caught, print a message and exit with status 1.
-      # This ensures the script exits gracefully instead of silently failing or hanging.
-      trap "echo '🛑 Cancelled or interrupted. Exiting...'; exit 1" SIGINT SIGTERM
-
-      cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
+      cd "private-sdks/docusign-test-${{parameters.language}}-sdk-private"
       echo "$(GITHUB_PAT)" | gh auth login --with-token
       gh --version
 
@@ -84,24 +64,13 @@ jobs:
       --base main \
       --head sdk-update-${{ parameters.language }}-$(Build.BuildId))
 
-      # pr_number=$(echo "$pr_info" | jq -r '.number')
-      # pr_url=$(echo "$pr_info" | jq -r '.url')
-
       pr_url=$(echo "$pr_info" | grep -o 'https://github.com[^ ]*')
       pr_number=$(echo "$pr_url" | grep -o '[0-9]*$')
 
       echo "Created PR #$pr_number"
       echo "URL: $pr_url"
-      # # ✅ Set as regular variables (for use within same job)
-      # echo "##vso[task.setvariable variable=privateRepoPrNumber]$pr_number"
-      # echo "##vso[task.setvariable variable=privateRepoPrUrl]$pr_url"
 
-      # # ✅ Set as output variables (for use across jobs)
-      # echo "##vso[task.setvariable variable=privateRepoPrNumber;isOutput=true]$pr_number"
-      # echo "##vso[task.setvariable variable=privateRepoPrUrl;isOutput=true]$pr_url"
-
-      # pr_number=$privateRepoPrNumber
-      repo="MGDS01/docusign-test-js-sdk"  # TODO: Replace with your actual repository
+      repo="MGDS01/docusign-test-${{parameters.language}}-sdk-private"  # TODO: Replace with your actual repository
 
       echo "Monitoring PR #$pr_number for merge status..."
 
@@ -152,22 +121,14 @@ jobs:
       # TODO: Replace with the actual public orgName and repoName.
       orgName: "MGDS01"
       # TODO: Replace targetDirectory with the actual private repoName.
-      repoName: "docusign-test-js-sdk-public"
-      # repoName: "docuTest-${{parameters.language}}-sdk-private"
-      targetDirectory: "public-sdks/docuTest-${{parameters.language}}-sdk"
+      repoName: "docusign-test-${{parameters.language}}-sdk"
+      targetDirectory: "public-sdks/docusign-test-${{parameters.language}}-sdk"
 
   - script: |
 
-      # Exit the script immediately if any command fails (non-zero exit code).
-      # This prevents the script from continuing in a broken state.
-      set -e
+      source .ado/setup-signal-handling.sh
 
-      # Set up a trap to catch termination signals (SIGINT from Ctrl+C or SIGTERM from pipeline cancel).
-      # When caught, print a message and exit with status 1.
-      # This ensures the script exits gracefully instead of silently failing or hanging.
-      trap "echo '🛑 Cancelled or interrupted. Exiting...'; exit 1" SIGINT SIGTERM
-
-      cd "private-sdks/docuTest-${{parameters.language}}-sdk-private"
+      cd "private-sdks/docusign-test-${{parameters.language}}-sdk-private"
       git config user.name "automation-bot"
       # TODO: Replace with correct email.
       git config user.email "mudit.garg@docusign.com"
@@ -175,7 +136,7 @@ jobs:
       git fetch origin
       git checkout -B main "origin/main"
 
-      cd "../../public-sdks/docuTest-${{parameters.language}}-sdk"
+      cd "../../public-sdks/docusign-test-${{parameters.language}}-sdk"
       git config user.name "automation-bot"
       # TODO: Replace with correct email.
       git config user.email "mudit.garg@docusign.com"
@@ -193,7 +154,7 @@ jobs:
       --exclude='.git' \
       --exclude='.gitignore' \
       --exclude-from=.gitignore \
-      ../../private-sdks/docuTest-${{parameters.language}}-sdk-private/ ./
+      ../../private-sdks/docusign-test-${{parameters.language}}-sdk-private/ ./
 
 
       git add -A
@@ -204,16 +165,9 @@ jobs:
 
   - script: |
 
-      # Exit the script immediately if any command fails (non-zero exit code).
-      # This prevents the script from continuing in a broken state.
-      set -e
+      source .ado/setup-signal-handling.sh
 
-      # Set up a trap to catch termination signals (SIGINT from Ctrl+C or SIGTERM from pipeline cancel).
-      # When caught, print a message and exit with status 1.
-      # This ensures the script exits gracefully instead of silently failing or hanging.
-      trap "echo '🛑 Cancelled or interrupted. Exiting...'; exit 1" SIGINT SIGTERM
-
-      cd "public-sdks/docuTest-${{parameters.language}}-sdk"
+      cd "public-sdks/docusign-test-${{parameters.language}}-sdk"
       echo "$(GITHUB_PAT)" | gh auth login --with-token
       git config user.name "automation-bot"
       # TODO: Replace with correct email.
@@ -231,7 +185,7 @@ jobs:
       echo "Created PR #$pr_number"
       echo "URL: $pr_url"      
  
-      repo="MGDS01/docusign-test-js-sdk-public"  # TODO: Replace with your actual repository
+      repo="MGDS01/docusign-test-${{parameters.language}}-sdk"  # TODO: Replace with your actual repository
 
       echo "Monitoring PR #$pr_number for merge status..."
 
@@ -275,6 +229,4 @@ jobs:
       done      
     displayName: 'Create Public Repo Pull Request and wait for MERGE on GitHub'    
 
-
-    # displayName: 'Wait for PR to be merged and then do something'
 # - publish: ./sdks/${{ parameters.language }}

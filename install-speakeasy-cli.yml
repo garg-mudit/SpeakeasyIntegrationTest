@@ -1,6 +1,9 @@
 # File: install-speakeasy-cli.yml
 steps:
 - script: |
+
+    source .ado/setup-signal-handling.sh
+    
     # Install Speakeasy CLI
     curl -fsSL https://go.speakeasy.com/cli-install.sh | sh
 

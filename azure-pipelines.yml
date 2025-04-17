@@ -14,10 +14,10 @@ parameters:
   displayName: 'Generate TypeScript SDK'
   type: boolean
   default: false
-# - name: generateJava
-#   displayName: 'Generate Java SDK'
-#   type: boolean
-#   default: false
+- name: generateJava
+  displayName: 'Generate Java SDK'
+  type: boolean
+  default: false
 # - name: generatePython
 #   displayName: 'Generate Python SDK'
 #   type: boolean
@@ -46,10 +46,10 @@ stages:
     parameters:
       language: 'typescript'
       generateSDK: ${{ parameters.generateTypeScript }}
-  # - template: generate-sdk-template.yml
-  #   parameters:
-  #     language: 'java'
-  #     generateSDK: ${{ parameters.generateJava }}
+  - template: generate-sdk-template.yml
+    parameters:
+      language: 'java'
+      generateSDK: ${{ parameters.generateJava }}
   # - template: generate-sdk-template.yml
   #   parameters:
   #     language: 'php'
