@@ -1,2 +1,5 @@
+# Normalize shell scripts to LF line endings
+*.sh text eol=lf
+
 # Don't include these files in zip/tar exports
 .ado/** export-ignore
